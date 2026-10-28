@@ -212,6 +212,20 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setBinding(val -> { Config.SHOW_MEMORY.set(val); Config.showMemoryEnabled = val; ExtraSettings.showMemory = val; }, () -> Config.showMemoryEnabled)
                         .setDefaultValue(false)
                         .setImpact(OptionImpact.LOW))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_cpu"))
+                        .setName(Component.translatable("reggadium.extra.show_cpu.name"))
+                        .setTooltip(Component.translatable("reggadium.extra.show_cpu.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.SHOW_CPU.set(val); Config.showCpuEnabled = val; ExtraSettings.showCpu = val; }, () -> Config.showCpuEnabled)
+                        .setDefaultValue(false)
+                        .setImpact(OptionImpact.LOW))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_gpu"))
+                        .setName(Component.translatable("reggadium.extra.show_gpu.name"))
+                        .setTooltip(Component.translatable("reggadium.extra.show_gpu.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.SHOW_GPU.set(val); Config.showGpuEnabled = val; ExtraSettings.showGpu = val; }, () -> Config.showGpuEnabled)
+                        .setDefaultValue(false)
+                        .setImpact(OptionImpact.LOW))
                 .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_gametime"))
                         .setName(Component.translatable("reggadium.extra.show_gametime.name"))
                         .setTooltip(Component.translatable("reggadium.extra.show_gametime.tooltip"))
@@ -289,6 +303,10 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         val -> { Config.BIOME_COLOR.set(val); Config.biomeColor = val; ExtraSettings.biomeColor = val; }, () -> Config.biomeColor))
                 .addOption(createColorOption(builder, "memory_color", "reggadium.extra.color.memory.name", "reggadium.extra.color.memory.tooltip",
                         val -> { Config.MEMORY_COLOR.set(val); Config.memoryColor = val; ExtraSettings.memoryColor = val; }, () -> Config.memoryColor))
+                .addOption(createColorOption(builder, "cpu_color", "reggadium.extra.color.cpu.name", "reggadium.extra.color.cpu.tooltip",
+                        val -> { Config.CPU_COLOR.set(val); Config.cpuColor = val; ExtraSettings.cpuColor = val; }, () -> Config.cpuColor))
+                .addOption(createColorOption(builder, "gpu_color", "reggadium.extra.color.gpu.name", "reggadium.extra.color.gpu.tooltip",
+                        val -> { Config.GPU_COLOR.set(val); Config.gpuColor = val; ExtraSettings.gpuColor = val; }, () -> Config.gpuColor))
                 .addOption(createColorOption(builder, "time_color", "reggadium.extra.color.time.name", "reggadium.extra.color.time.tooltip",
                         val -> { Config.TIME_COLOR.set(val); Config.timeColor = val; ExtraSettings.timeColor = val; }, () -> Config.timeColor))
                 .addOption(createColorOption(builder, "ping_color", "reggadium.extra.color.ping.name", "reggadium.extra.color.ping.tooltip",

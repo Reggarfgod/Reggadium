@@ -20,6 +20,14 @@ public class BlockEntityRenderDispatcherMixin {
             return;
         }
 
+        // Distance Culling: beyond 80 blocks (6400 sq distance), skip rendering standard block entities
+        // (chests, signs, skulls, campfires, hoppers) to save CPU draw call dispatching in massive bases
+        if (ReggadiumCuller.isBeyondDistance(blockEntity.getBlockPos(), 6400.0)) {
+            ci.cancel();
+            return;
+        }
+
+        // Frustum Culling: skip rendering when outside camera view
         if (!ReggadiumCuller.isBlockEntityVisible(blockEntity)) {
             ci.cancel();
         }

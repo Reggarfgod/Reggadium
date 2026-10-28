@@ -11,6 +11,8 @@ public class ExtraSettings {
     public static boolean showFacing = false;
     public static boolean showBiome = false;
     public static boolean showMemory = false;
+    public static boolean showCpu = false;
+    public static boolean showGpu = false;
     public static boolean showGameTime = false;
     public static boolean showPing = false;
 
@@ -27,6 +29,8 @@ public class ExtraSettings {
     public static HudColor facingColor = HudColor.GRAY;
     public static HudColor biomeColor = HudColor.CYAN;
     public static HudColor memoryColor = HudColor.DYNAMIC;
+    public static HudColor cpuColor = HudColor.DYNAMIC;
+    public static HudColor gpuColor = HudColor.DYNAMIC;
     public static HudColor timeColor = HudColor.GOLD;
     public static HudColor pingColor = HudColor.DYNAMIC;
 

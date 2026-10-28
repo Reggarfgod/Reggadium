@@ -57,8 +57,7 @@ public class ReggadiumEmbeddiumCompat {
         event.addPage(createDiagnosticsPage());
     }
 
-    // --- Option Builders ---
-
+    // --- Option Builders ---\n
     public static OptionImpl<Void, Boolean> createEnableOptimizationsOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "enable_optimizations"))
@@ -168,6 +167,38 @@ public class ReggadiumEmbeddiumCompat {
                     ExtraSettings.showMemory = val;
                     Config.save();
                 }, opts -> Config.showMemoryEnabled)
+                .setImpact(OptionImpact.LOW)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createShowCpuOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_cpu"))
+                .setName(Component.translatable("reggadium.extra.show_cpu.name"))
+                .setTooltip(Component.translatable("reggadium.extra.show_cpu.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.SHOW_CPU.set(val);
+                    Config.showCpuEnabled = val;
+                    ExtraSettings.showCpu = val;
+                    Config.save();
+                }, opts -> Config.showCpuEnabled)
+                .setImpact(OptionImpact.LOW)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createShowGpuOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_gpu"))
+                .setName(Component.translatable("reggadium.extra.show_gpu.name"))
+                .setTooltip(Component.translatable("reggadium.extra.show_gpu.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.SHOW_GPU.set(val);
+                    Config.showGpuEnabled = val;
+                    ExtraSettings.showGpu = val;
+                    Config.save();
+                }, opts -> Config.showGpuEnabled)
                 .setImpact(OptionImpact.LOW)
                 .build();
     }
@@ -351,6 +382,18 @@ public class ReggadiumEmbeddiumCompat {
         return createColorOption("memory_color", "reggadium.extra.color.memory.name", "reggadium.extra.color.memory.tooltip",
                 val -> { Config.MEMORY_COLOR.set(val); Config.memoryColor = val; ExtraSettings.memoryColor = val; },
                 () -> Config.memoryColor);
+    }
+
+    public static OptionImpl<Void, HudColor> createCpuColorOption() {
+        return createColorOption("cpu_color", "reggadium.extra.color.cpu.name", "reggadium.extra.color.cpu.tooltip",
+                val -> { Config.CPU_COLOR.set(val); Config.cpuColor = val; ExtraSettings.cpuColor = val; },
+                () -> Config.cpuColor);
+    }
+
+    public static OptionImpl<Void, HudColor> createGpuColorOption() {
+        return createColorOption("gpu_color", "reggadium.extra.color.gpu.name", "reggadium.extra.color.gpu.tooltip",
+                val -> { Config.GPU_COLOR.set(val); Config.gpuColor = val; ExtraSettings.gpuColor = val; },
+                () -> Config.gpuColor);
     }
 
     public static OptionImpl<Void, HudColor> createTimeColorOption() {
@@ -616,6 +659,8 @@ public class ReggadiumEmbeddiumCompat {
                 .add(createShowFacingOption())
                 .add(createShowBiomeOption())
                 .add(createShowMemoryOption())
+                .add(createShowCpuOption())
+                .add(createShowGpuOption())
                 .add(createShowGameTimeOption())
                 .add(createShowPingOption())
                 .build();
@@ -640,6 +685,8 @@ public class ReggadiumEmbeddiumCompat {
                 .add(createFacingColorOption())
                 .add(createBiomeColorOption())
                 .add(createMemoryColorOption())
+                .add(createCpuColorOption())
+                .add(createGpuColorOption())
                 .add(createTimeColorOption())
                 .add(createPingColorOption())
                 .build();

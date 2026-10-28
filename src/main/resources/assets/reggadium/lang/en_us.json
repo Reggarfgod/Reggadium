@@ -35,6 +35,8 @@
   "reggadium.extra.overlay.facing": "Facing: %s (%s)",
   "reggadium.extra.overlay.biome": "Biome: %s",
   "reggadium.extra.overlay.memory": "Mem: %sMB / %sMB (%s%%)",
+  "reggadium.extra.overlay.cpu": "CPU: %s%%",
+  "reggadium.extra.overlay.gpu": "GPU: %s%%",
   "reggadium.extra.overlay.gametime": "Time: %s (Day %s)",
   "reggadium.extra.overlay.ping": "Ping: %sms",
 
@@ -55,6 +57,12 @@
 
   "reggadium.extra.show_memory.name": "Show Memory (RAM)",
   "reggadium.extra.show_memory.tooltip": "Displays current Java heap memory usage and allocation percentage on screen.",
+
+  "reggadium.extra.show_cpu.name": "Show CPU Usage",
+  "reggadium.extra.show_cpu.tooltip": "Displays real-time CPU utilization percentage for the game process on screen.",
+
+  "reggadium.extra.show_gpu.name": "Show GPU Usage",
+  "reggadium.extra.show_gpu.tooltip": "Displays real-time graphics card GPU utilization percentage on screen.",
 
   "reggadium.extra.show_gametime.name": "Show In-Game Time",
   "reggadium.extra.show_gametime.tooltip": "Displays Minecraft world clock and day counter on screen.",
@@ -111,6 +119,10 @@
   "reggadium.extra.color.biome.tooltip": "Choose color theme for biome overlay.",
   "reggadium.extra.color.memory.name": "Memory Color",
   "reggadium.extra.color.memory.tooltip": "Choose color theme for RAM / memory overlay.",
+  "reggadium.extra.color.cpu.name": "CPU Color",
+  "reggadium.extra.color.cpu.tooltip": "Choose color theme for the CPU usage overlay.",
+  "reggadium.extra.color.gpu.name": "GPU Color",
+  "reggadium.extra.color.gpu.tooltip": "Choose color theme for the GPU usage overlay.",
   "reggadium.extra.color.time.name": "Time Color",
   "reggadium.extra.color.time.tooltip": "Choose color theme for in-game time overlay.",
   "reggadium.extra.color.ping.name": "Ping Color",

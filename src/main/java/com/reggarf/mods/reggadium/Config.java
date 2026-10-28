@@ -25,6 +25,8 @@ public class Config {
     public static final ModConfigSpec.BooleanValue SHOW_FACING;
     public static final ModConfigSpec.BooleanValue SHOW_BIOME;
     public static final ModConfigSpec.BooleanValue SHOW_MEMORY;
+    public static final ModConfigSpec.BooleanValue SHOW_CPU;
+    public static final ModConfigSpec.BooleanValue SHOW_GPU;
     public static final ModConfigSpec.BooleanValue SHOW_GAME_TIME;
     public static final ModConfigSpec.BooleanValue SHOW_PING;
 
@@ -39,6 +41,8 @@ public class Config {
     public static final ModConfigSpec.EnumValue<HudColor> FACING_COLOR;
     public static final ModConfigSpec.EnumValue<HudColor> BIOME_COLOR;
     public static final ModConfigSpec.EnumValue<HudColor> MEMORY_COLOR;
+    public static final ModConfigSpec.EnumValue<HudColor> CPU_COLOR;
+    public static final ModConfigSpec.EnumValue<HudColor> GPU_COLOR;
     public static final ModConfigSpec.EnumValue<HudColor> TIME_COLOR;
     public static final ModConfigSpec.EnumValue<HudColor> PING_COLOR;
 
@@ -93,6 +97,14 @@ public class Config {
                 .comment("Display current memory / RAM allocation on screen")
                 .define("showMemory", false);
 
+        SHOW_CPU = BUILDER
+                .comment("Display real-time CPU utilization percentage on screen")
+                .define("showCpu", false);
+
+        SHOW_GPU = BUILDER
+                .comment("Display real-time graphics card GPU utilization percentage on screen")
+                .define("showGpu", false);
+
         SHOW_GAME_TIME = BUILDER
                 .comment("Display current in-game time and day counter on screen")
                 .define("showGameTime", false);
@@ -140,6 +152,14 @@ public class Config {
         MEMORY_COLOR = BUILDER
                 .comment("Color for Memory / RAM overlay text")
                 .defineEnum("memoryColor", HudColor.DYNAMIC);
+
+        CPU_COLOR = BUILDER
+                .comment("Color for CPU usage overlay text")
+                .defineEnum("cpuColor", HudColor.DYNAMIC);
+
+        GPU_COLOR = BUILDER
+                .comment("Color for GPU usage overlay text")
+                .defineEnum("gpuColor", HudColor.DYNAMIC);
 
         TIME_COLOR = BUILDER
                 .comment("Color for In-Game Time overlay text")
@@ -219,6 +239,8 @@ public class Config {
     public static boolean showFacingEnabled = false;
     public static boolean showBiomeEnabled = false;
     public static boolean showMemoryEnabled = false;
+    public static boolean showCpuEnabled = false;
+    public static boolean showGpuEnabled = false;
     public static boolean showGameTimeEnabled = false;
     public static boolean showPingEnabled = false;
 
@@ -233,6 +255,8 @@ public class Config {
     public static HudColor facingColor = HudColor.GRAY;
     public static HudColor biomeColor = HudColor.CYAN;
     public static HudColor memoryColor = HudColor.DYNAMIC;
+    public static HudColor cpuColor = HudColor.DYNAMIC;
+    public static HudColor gpuColor = HudColor.DYNAMIC;
     public static HudColor timeColor = HudColor.GOLD;
     public static HudColor pingColor = HudColor.DYNAMIC;
 
@@ -271,6 +295,8 @@ public class Config {
         showFacingEnabled = SHOW_FACING.get();
         showBiomeEnabled = SHOW_BIOME.get();
         showMemoryEnabled = SHOW_MEMORY.get();
+        showCpuEnabled = SHOW_CPU.get();
+        showGpuEnabled = SHOW_GPU.get();
         showGameTimeEnabled = SHOW_GAME_TIME.get();
         showPingEnabled = SHOW_PING.get();
 
@@ -285,6 +311,8 @@ public class Config {
         facingColor = FACING_COLOR.get();
         biomeColor = BIOME_COLOR.get();
         memoryColor = MEMORY_COLOR.get();
+        cpuColor = CPU_COLOR.get();
+        gpuColor = GPU_COLOR.get();
         timeColor = TIME_COLOR.get();
         pingColor = PING_COLOR.get();
 
@@ -295,6 +323,8 @@ public class Config {
         ExtraSettings.showFacing = showFacingEnabled;
         ExtraSettings.showBiome = showBiomeEnabled;
         ExtraSettings.showMemory = showMemoryEnabled;
+        ExtraSettings.showCpu = showCpuEnabled;
+        ExtraSettings.showGpu = showGpuEnabled;
         ExtraSettings.showGameTime = showGameTimeEnabled;
         ExtraSettings.showPing = showPingEnabled;
 
@@ -309,6 +339,8 @@ public class Config {
         ExtraSettings.facingColor = facingColor;
         ExtraSettings.biomeColor = biomeColor;
         ExtraSettings.memoryColor = memoryColor;
+        ExtraSettings.cpuColor = cpuColor;
+        ExtraSettings.gpuColor = gpuColor;
         ExtraSettings.timeColor = timeColor;
         ExtraSettings.pingColor = pingColor;
 

@@ -10,8 +10,13 @@
     "SafeBlockEntityRendererMixin",
     "BlockEntityRenderDispatcherMixin",
     "ParticleMixin",
+    "KineticBlockEntityAccessor",
+    "KineticEffectHandlerAccessor",
     "KineticBlockEntityMixin",
     "KineticBlockEntityRendererMixin",
+    "KineticBlockEntityVisualMixin",
+    "SmartBlockEntityMixin",
+    "SoundScapesMixin",
     "BeltRendererMixin",
     "ContraptionEntityRendererMixin"
   ],

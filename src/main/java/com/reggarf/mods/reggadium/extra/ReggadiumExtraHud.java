@@ -45,6 +45,9 @@ public class ReggadiumExtraHud implements LayeredDraw.Layer {
             return;
         }
 
+        // Update system performance tracker (CPU, GPU)
+        SystemPerformanceTracker.update();
+
         List<HudLine> lines = new ArrayList<>();
 
         // 1. FPS Line
@@ -141,7 +144,39 @@ public class ReggadiumExtraHud implements LayeredDraw.Layer {
                 lines.add(new HudLine(memText, memColor));
             }
 
-            // 6. In-Game Time & Day Line
+            // 6. CPU Usage Line
+            if (ExtraSettings.showCpu) {
+                int cpu = SystemPerformanceTracker.getCpuProcess();
+                int dynamicCpuColor;
+                if (cpu < 60) {
+                    dynamicCpuColor = 0x55FF55; // Green
+                } else if (cpu < 85) {
+                    dynamicCpuColor = 0xFFFF55; // Yellow
+                } else {
+                    dynamicCpuColor = 0xFF5555; // Red
+                }
+                int cpuColor = ExtraSettings.cpuColor.getColor(dynamicCpuColor);
+                Component cpuText = Component.translatable("reggadium.extra.overlay.cpu", cpu);
+                lines.add(new HudLine(cpuText, cpuColor));
+            }
+
+            // 7. GPU Usage Line
+            if (ExtraSettings.showGpu) {
+                int gpu = SystemPerformanceTracker.getGpuPercent();
+                int dynamicGpuColor;
+                if (gpu < 70) {
+                    dynamicGpuColor = 0x55FF55; // Green
+                } else if (gpu < 90) {
+                    dynamicGpuColor = 0xFFFF55; // Yellow
+                } else {
+                    dynamicGpuColor = 0xFF5555; // Red
+                }
+                int gpuColor = ExtraSettings.gpuColor.getColor(dynamicGpuColor);
+                Component gpuText = Component.translatable("reggadium.extra.overlay.gpu", gpu);
+                lines.add(new HudLine(gpuText, gpuColor));
+            }
+
+            // 8. In-Game Time & Day Line
             if (ExtraSettings.showGameTime && mc.level != null) {
                 long dayTime = mc.level.getDayTime();
                 long day = dayTime / 24000L;
@@ -165,7 +200,7 @@ public class ReggadiumExtraHud implements LayeredDraw.Layer {
                 lines.add(new HudLine(timeText, timeColor));
             }
 
-            // 7. Ping / Latency Line
+            // 9. Ping / Latency Line
             if (ExtraSettings.showPing && mc.getConnection() != null) {
                 PlayerInfo info = mc.getConnection().getPlayerInfo(player.getUUID());
                 if (info != null) {
