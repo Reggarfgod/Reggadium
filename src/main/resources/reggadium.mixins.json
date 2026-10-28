@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.reggarf.mods.reggadium.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BufferBuilderAccessor",
+    "ShadedBlockSbbBuilderMixin",
+    "SuperBufferFactoryMixin",
+    "SafeBlockEntityRendererMixin",
+    "BlockEntityRenderDispatcherMixin",
+    "ParticleMixin",
+    "KineticBlockEntityMixin",
+    "KineticBlockEntityRendererMixin",
+    "BeltRendererMixin",
+    "ContraptionEntityRendererMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "reggadium.options.tab_title": "Reggadium",
+  "reggadium.options.button": "Reggadium...",
+  "reggadium.options.screen.title": "Reggadium Optimization Settings",
+  
+  "reggadium.options.page.kinetics": "Kinetics",
+  "reggadium.options.page.culling": "Culling",
+  "reggadium.options.page.pipeline": "Pipeline",
+  "reggadium.options.page.diagnostics": "Extra",
+  "reggadium.options.page.extra": "Extra",
+
+  "reggadium.options.page.general": "Extra",
+  "reggadium.options.page.performance": "Kinetics",
+  "reggadium.options.page.quality": "Culling",
+  "reggadium.options.page.advanced": "Pipeline",
+
+  "reggadium.options.group.kinetic_streaming": "Kinetic Geometry & Streaming",
+  "reggadium.options.group.factory_culling": "Factory & Kinetic Culling",
+  "reggadium.options.group.frustum_culling": "View Frustum Culling",
+  "reggadium.options.group.contraption_lod": "Contraption Detail & LOD",
+  "reggadium.options.group.vertex_pipeline": "Direct GPU Memory Layout",
+  "reggadium.options.group.extra_hud": "Extra HUD & Overlays",
+  "reggadium.options.group.extra_hud_metrics": "Extra HUD Metrics",
+  "reggadium.options.group.extra_hud_layout": "Extra HUD Layout & Styling",
+  "reggadium.options.group.extra_hud_colors": "Extra HUD Color Customization",
+  "reggadium.options.group.system": "System Settings",
+  "reggadium.options.group.diagnostics": "System & Overlay",
+
+  "reggadium.options.enable_optimizations.name": "Master Optimization Switch",
+  "reggadium.options.enable_optimizations.tooltip": "Globally enables or disables all Reggadium performance optimizations.",
+
+  "reggadium.extra.overlay.fps": "%s FPS",
+  "reggadium.extra.overlay.fps_extended": "%s FPS (min: %s, avg: %s, max: %s)",
+  "reggadium.extra.overlay.coordinates": "XYZ: %s / %s / %s",
+  "reggadium.extra.overlay.facing": "Facing: %s (%s)",
+  "reggadium.extra.overlay.biome": "Biome: %s",
+  "reggadium.extra.overlay.memory": "Mem: %sMB / %sMB (%s%%)",
+  "reggadium.extra.overlay.gametime": "Time: %s (Day %s)",
+  "reggadium.extra.overlay.ping": "Ping: %sms",
+
+  "reggadium.extra.show_fps.name": "Show FPS",
+  "reggadium.extra.show_fps.tooltip": "Displays real-time frame rate with dynamic color coding on screen.",
+
+  "reggadium.extra.show_fps_extended.name": "Show Extended FPS",
+  "reggadium.extra.show_fps_extended.tooltip": "Displays minimum, average, and maximum FPS alongside current framerate.",
+
+  "reggadium.extra.show_coords.name": "Show Coordinates",
+  "reggadium.extra.show_coords.tooltip": "Displays player XYZ world coordinates on screen.",
+
+  "reggadium.extra.show_facing.name": "Show Direction",
+  "reggadium.extra.show_facing.tooltip": "Displays player looking direction and axis orientation.",
+
+  "reggadium.extra.show_biome.name": "Show Biome",
+  "reggadium.extra.show_biome.tooltip": "Displays current biome name on screen.",
+
+  "reggadium.extra.show_memory.name": "Show Memory (RAM)",
+  "reggadium.extra.show_memory.tooltip": "Displays current Java heap memory usage and allocation percentage on screen.",
+
+  "reggadium.extra.show_gametime.name": "Show In-Game Time",
+  "reggadium.extra.show_gametime.tooltip": "Displays Minecraft world clock and day counter on screen.",
+
+  "reggadium.extra.show_ping.name": "Show Ping / Latency",
+  "reggadium.extra.show_ping.tooltip": "Displays network connection latency in milliseconds on screen.",
+
+  "reggadium.extra.overlay_corner.name": "HUD Position",
+  "reggadium.extra.overlay_corner.tooltip": "Choose screen corner to anchor the extra HUD overlay.",
+  "reggadium.extra.overlay_corner.top_left": "Top Left",
+  "reggadium.extra.overlay_corner.top_right": "Top Right",
+  "reggadium.extra.overlay_corner.bottom_left": "Bottom Left",
+  "reggadium.extra.overlay_corner.bottom_right": "Bottom Right",
+
+  "reggadium.extra.hud_scale.name": "HUD Scale",
+  "reggadium.extra.hud_scale.tooltip": "Increase or decrease the display size of the extra HUD overlay (50% to 200%).",
+
+  "reggadium.extra.text_contrast.name": "Text Contrast",
+  "reggadium.extra.text_contrast.tooltip": "Choose text rendering style (None, Shadow, or Dark Background).",
+  "reggadium.extra.text_contrast.none": "None",
+  "reggadium.extra.text_contrast.shadow": "Shadow",
+  "reggadium.extra.text_contrast.background": "Background",
+
+  "reggadium.extra.background_opacity.name": "Background Opacity",
+  "reggadium.extra.background_opacity.tooltip": "Adjusts background box opacity when text contrast is set to Background.",
+  "reggadium.extra.bg_opacity.subtle": "Subtle (25%)",
+  "reggadium.extra.bg_opacity.medium": "Medium (50%)",
+  "reggadium.extra.bg_opacity.heavy": "Heavy (75%)",
+  "reggadium.extra.bg_opacity.solid": "Solid (100%)",
+
+  "reggadium.extra.coord_precision.name": "Coordinate Precision",
+  "reggadium.extra.coord_precision.tooltip": "Adjusts decimal precision for XYZ coordinates.",
+  "reggadium.extra.coord_precision.integer": "Integer (0 Decimals)",
+  "reggadium.extra.coord_precision.one_decimal": "1 Decimal",
+  "reggadium.extra.coord_precision.two_decimals": "2 Decimals",
+
+  "reggadium.extra.color.dynamic": "Dynamic",
+  "reggadium.extra.color.white": "White",
+  "reggadium.extra.color.green": "Green",
+  "reggadium.extra.color.cyan": "Cyan",
+  "reggadium.extra.color.gold": "Gold",
+  "reggadium.extra.color.yellow": "Yellow",
+  "reggadium.extra.color.red": "Red",
+  "reggadium.extra.color.purple": "Purple",
+  "reggadium.extra.color.gray": "Gray",
+
+  "reggadium.extra.color.fps.name": "FPS Color",
+  "reggadium.extra.color.fps.tooltip": "Choose color theme for the FPS counter overlay.",
+  "reggadium.extra.color.coords.name": "Coordinates Color",
+  "reggadium.extra.color.coords.tooltip": "Choose color theme for coordinates overlay.",
+  "reggadium.extra.color.facing.name": "Facing Color",
+  "reggadium.extra.color.facing.tooltip": "Choose color theme for player facing direction overlay.",
+  "reggadium.extra.color.biome.name": "Biome Color",
+  "reggadium.extra.color.biome.tooltip": "Choose color theme for biome overlay.",
+  "reggadium.extra.color.memory.name": "Memory Color",
+  "reggadium.extra.color.memory.tooltip": "Choose color theme for RAM / memory overlay.",
+  "reggadium.extra.color.time.name": "Time Color",
+  "reggadium.extra.color.time.tooltip": "Choose color theme for in-game time overlay.",
+  "reggadium.extra.color.ping.name": "Ping Color",
+  "reggadium.extra.color.ping.tooltip": "Choose color theme for ping / latency overlay.",
+
+  "reggadium.options.fast_sbb.name": "Direct SuperByteBuffer Streaming",
+  "reggadium.options.fast_sbb.tooltip": "Bypasses heap vertex allocation by streaming Create contraption and kinetic models directly to native GPU memory buffers.",
+
+  "reggadium.options.backface_culling.name": "Kinetic Backface Culling",
+  "reggadium.options.backface_culling.tooltip": "Discards inward and backward facing triangles on rotating Create machinery, saving GPU fill rate and reducing micro-stutters.",
+
+  "reggadium.options.fast_light_cache.name": "Kinetic Light Caching",
+  "reggadium.options.fast_light_cache.tooltip": "Caches lighting lookups for rotating components (with an automatic 8192-entry memory guard) to eliminate repeated level queries.",
+
+  "reggadium.options.cull_belts.name": "Belt & Item Culling",
+  "reggadium.options.cull_belts.tooltip": "Frustum culls Create mechanical belts and transported items when off-screen or distant, drastically increasing FPS in automated factories.",
+
+  "reggadium.options.kinetic_culling.name": "Kinetic Frustum Culling",
+  "reggadium.options.kinetic_culling.tooltip": "Completely halts rendering passes for kinetic blocks outside the player's view frustum or beyond render distance.",
+
+  "reggadium.options.skip_stationary_kinetics.name": "Stationary Kinetic Sleep",
+  "reggadium.options.skip_stationary_kinetics.tooltip": "Skips redundant angle calculations, matrix transformations, and rotation math for stopped or unpowered machines.",
+
+  "reggadium.options.kinetic_audio_throttling.name": "Kinetic Audio Throttling",
+  "reggadium.options.kinetic_audio_throttling.tooltip": "Throttles soundscape calculations and culls sound queries for distant running machinery to eliminate client tick lag.",
+
+  "reggadium.options.kinetic_lod.name": "Kinetic Rotation LOD",
+  "reggadium.options.kinetic_lod.tooltip": "Applies smooth rotational level-of-detail to distant spinning shafts and cogwheels to reduce vertex transformation jitter.",
+
+  "reggadium.options.reduce_block_entity_lag.name": "Kinetic State Sleep",
+  "reggadium.options.reduce_block_entity_lag.tooltip": "Reduces client-side update frequency and processing load for kinetic block entities situated outside the visible field of view.",
+
+  "reggadium.options.cull_block_entities.name": "Block Entity Frustum Culling",
+  "reggadium.options.cull_block_entities.tooltip": "Frustum culls vanilla and modded block entities (chests, furnaces, signs, banners) when outside the camera view.",
+
+  "reggadium.options.cull_particles.name": "Particle Frustum Culling",
+  "reggadium.options.cull_particles.tooltip": "Skips quad vertex generation and rasterization for particles positioned outside the player's camera frustum.",
+
+  "reggadium.options.optimize_contraptions.name": "Contraption Distance LOD",
+  "reggadium.options.optimize_contraptions.tooltip": "Applies distance-based level-of-detail to moving contraptions, skipping detailed actor animation passes when far away.",
+
+  "reggadium.options.optimize_entity_rendering.name": "Native Vertex Buffer Formatting",
+  "reggadium.options.optimize_entity_rendering.tooltip": "Formats entity and block entity vertices directly into native GPU memory structures to eliminate memory allocation spikes."
+}
