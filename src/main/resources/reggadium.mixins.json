@@ -10,6 +10,7 @@
     "SafeBlockEntityRendererMixin",
     "BlockEntityRenderDispatcherMixin",
     "ParticleMixin",
+    "MinecraftMixin",
     "KineticBlockEntityAccessor",
     "KineticEffectHandlerAccessor",
     "KineticBlockEntityMixin",
