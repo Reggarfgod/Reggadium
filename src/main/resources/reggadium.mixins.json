@@ -28,6 +28,7 @@
     "particle.ParticleAccessor",
     "particle.ParticleEngineMixin",
     "particle.ParticleMixin",
+    "render.BlockEntityMixin",
     "render.BlockEntityRenderDispatcherMixin",
     "render.BufferBuilderAccessor",
     "render.EntityRenderDispatcherMixin",

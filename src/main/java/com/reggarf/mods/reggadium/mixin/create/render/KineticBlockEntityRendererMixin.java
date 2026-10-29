@@ -18,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = KineticBlockEntityRenderer.class, remap = false)
 public class KineticBlockEntityRendererMixin {
 
+    private static final float DEG_TO_RAD = (float) (Math.PI / 180.0);
+
     @Inject(method = "renderSafe(Lcom/simibubi/create/content/kinetics/base/KineticBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderSafe(KineticBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
         if (!Config.optimizationsEnabled) {
@@ -50,7 +52,7 @@ public class KineticBlockEntityRendererMixin {
             float steps = distSq > 1024.0 ? 10.0f : 20.0f;
             time = ((int) (time * steps)) / steps;
             float offset = KineticBlockEntityRenderer.getRotationOffsetForPosition(be, pos, axis);
-            float angle = ((time * be.getSpeed() * 3f / 10f) + offset) % 360 / 180 * (float) Math.PI;
+            float angle = (((time * be.getSpeed() * 0.3f) + offset) % 360.0f) * DEG_TO_RAD;
             cir.setReturnValue(angle);
         }
     }

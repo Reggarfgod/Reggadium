@@ -196,19 +196,18 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
 
     @Override
     public SuperByteBuffer shiftUVScrolling(SpriteShiftEntry entry, float scrollU, float scrollV) {
-        spriteShiftFunc = (u, v, output) -> {
-            float targetU = u - entry.getOriginal().getU0() + entry.getTarget().getU0() + scrollU;
-            float targetV = v - entry.getOriginal().getV0() + entry.getTarget().getV0() + scrollV;
-            output.accept(targetU, targetV);
-        };
+        float du = entry.getTarget().getU0() - entry.getOriginal().getU0() + scrollU;
+        float dv = entry.getTarget().getV0() - entry.getOriginal().getV0() + scrollV;
+        spriteShiftFunc = (u, v, output) -> output.accept(u + du, v + dv);
         return this;
     }
 
     @Override
     public SuperByteBuffer shiftUVtoSheet(SpriteShiftEntry entry, float uTarget, float vTarget, int sheetSize) {
+        float invSheetSize = 1.0f / sheetSize;
         spriteShiftFunc = (u, v, output) -> {
-            float targetU = entry.getTarget().getU((SpriteShiftEntry.getUnInterpolatedU(entry.getOriginal(), u) / sheetSize) + uTarget);
-            float targetV = entry.getTarget().getV((SpriteShiftEntry.getUnInterpolatedV(entry.getOriginal(), v) / sheetSize) + vTarget);
+            float targetU = entry.getTarget().getU((SpriteShiftEntry.getUnInterpolatedU(entry.getOriginal(), u) * invSheetSize) + uTarget);
+            float targetV = entry.getTarget().getV((SpriteShiftEntry.getUnInterpolatedV(entry.getOriginal(), v) * invSheetSize) + vTarget);
             output.accept(targetU, targetV);
         };
         return this;
@@ -289,17 +288,15 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
         return RenderSystem.getProjectionMatrix().m33() == 0;
     }
 
-    private static int calcColorSodium(int quadColor, int vertexColor, int unshadedDiffuse, boolean applyDiffuse, boolean shaded, float nx, float ny, float nz) {
+    private static int calcColorSodiumFast(int quadColor, int vertexColor, int diffuseFactor, boolean applyDiffuse) {
         int r = ((((quadColor) & 0xFF) * ((vertexColor) & 0xFF)) + 0xFF) >>> 8;
         int g = ((((quadColor >>> 8) & 0xFF) * ((vertexColor >>> 8) & 0xFF)) + 0xFF) >>> 8;
         int b = ((((quadColor >>> 16) & 0xFF) * ((vertexColor >>> 16) & 0xFF)) + 0xFF) >>> 8;
         int a = ((((quadColor >>> 24) & 0xFF) * ((vertexColor >>> 24) & 0xFF)) + 0xFF) >>> 8;
         if (applyDiffuse) {
-            FLOAT3.set(nx, ny, nz);
-            int factor = shaded ? (int) (255.0F * calculateDiffuse(FLOAT3, LIGHT_DIR_0, LIGHT_DIR_1)) : unshadedDiffuse;
-            r = (r * factor + 255) >>> 8;
-            g = (g * factor + 255) >>> 8;
-            b = (b * factor + 255) >>> 8;
+            r = (r * diffuseFactor + 255) >>> 8;
+            g = (g * diffuseFactor + 255) >>> 8;
+            b = (b * diffuseFactor + 255) >>> 8;
         }
         return (a << 24) | (b << 16) | (g << 8) | r;
     }
@@ -379,10 +376,29 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
                 UV3.set(template.u(i + 3), template.v(i + 3));
             }
 
-            int color0 = calcColorSodium(template.color(i), vertexColor, unshadedDiffuse, applyDiffuse, shaded, nx, ny, nz);
-            int color1 = calcColorSodium(template.color(i + 1), vertexColor, unshadedDiffuse, applyDiffuse, shaded, nx, ny, nz);
-            int color2 = calcColorSodium(template.color(i + 2), vertexColor, unshadedDiffuse, applyDiffuse, shaded, nx, ny, nz);
-            int color3 = calcColorSodium(template.color(i + 3), vertexColor, unshadedDiffuse, applyDiffuse, shaded, nx, ny, nz);
+            int diffuseFactor = 255;
+            if (applyDiffuse) {
+                if (shaded) {
+                    FLOAT3.set(nx, ny, nz);
+                    diffuseFactor = (int) (255.0F * calculateDiffuse(FLOAT3, LIGHT_DIR_0, LIGHT_DIR_1));
+                } else {
+                    diffuseFactor = unshadedDiffuse;
+                }
+            }
+
+            int c0 = template.color(i);
+            int c1 = template.color(i + 1);
+            int c2 = template.color(i + 2);
+            int c3 = template.color(i + 3);
+            int color0, color1, color2, color3;
+            if (c0 == c1 && c0 == c2 && c0 == c3) {
+                color0 = color1 = color2 = color3 = calcColorSodiumFast(c0, vertexColor, diffuseFactor, applyDiffuse);
+            } else {
+                color0 = calcColorSodiumFast(c0, vertexColor, diffuseFactor, applyDiffuse);
+                color1 = calcColorSodiumFast(c1, vertexColor, diffuseFactor, applyDiffuse);
+                color2 = calcColorSodiumFast(c2, vertexColor, diffuseFactor, applyDiffuse);
+                color3 = calcColorSodiumFast(c3, vertexColor, diffuseFactor, applyDiffuse);
+            }
 
             int light0 = template.light(i);
             int light1 = template.light(i + 1);
