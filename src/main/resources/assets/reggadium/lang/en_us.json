@@ -6,6 +6,7 @@
   "reggadium.options.page.kinetics": "Kinetics",
   "reggadium.options.page.culling": "Culling",
   "reggadium.options.page.pipeline": "Pipeline",
+  "reggadium.options.page.memory": "Memory Leaks",
   "reggadium.options.page.diagnostics": "Extra",
   "reggadium.options.page.extra": "Extra",
 
@@ -19,6 +20,8 @@
   "reggadium.options.group.frustum_culling": "View Frustum Culling",
   "reggadium.options.group.contraption_lod": "Contraption Detail & LOD",
   "reggadium.options.group.vertex_pipeline": "Direct GPU Memory Layout",
+  "reggadium.options.group.memory_master": "Memory Protection Master",
+  "reggadium.options.group.memory_leaks": "Memory Leak Mitigations",
   "reggadium.options.group.extra_hud": "Extra HUD & Overlays",
   "reggadium.options.group.extra_hud_metrics": "Extra HUD Metrics",
   "reggadium.options.group.extra_hud_layout": "Extra HUD Layout & Styling",
@@ -28,6 +31,21 @@
 
   "reggadium.options.enable_optimizations.name": "Master Optimization Switch",
   "reggadium.options.enable_optimizations.tooltip": "Globally enables or disables all Reggadium performance optimizations.",
+
+  "reggadium.options.fix_memory_leaks.name": "Master Memory Leak Fixer",
+  "reggadium.options.fix_memory_leaks.tooltip": "Master switch to enable or disable all Reggadium memory leak mitigations and lifecycle cleanups.",
+
+  "reggadium.options.fix_client_level_leak.name": "Fix ClientLevel Leak",
+  "reggadium.options.fix_client_level_leak.tooltip": "Dispatches LevelEvent.Unload on world quit so Flywheel, Sodium, and renderers flush dead world caches and free multi-gigabyte memory graphs.",
+
+  "reggadium.options.fix_fake_player_leak.name": "Fix FakePlayer Leak",
+  "reggadium.options.fix_fake_player_leak.tooltip": "Sandboxes and detaches advancement triggers for FakePlayers (Create Deployers, Quarry miners, Autocrafters) to fix NeoForge Issue #1487.",
+
+  "reggadium.options.fix_debug_subscription_leak.name": "Fix Debug Subscription Leak",
+  "reggadium.options.fix_debug_subscription_leak.tooltip": "Removes processed subscription requests from DebugSampleSubscriptionTracker to stop unbounded memory queue growth.",
+
+  "reggadium.options.memory.enable_all": "Enable All Memory Fixes",
+  "reggadium.options.memory.disable_all": "Disable All Memory Fixes",
 
   "reggadium.extra.overlay.fps": "%s FPS",
   "reggadium.extra.overlay.fps_extended": "%s FPS (min: %s, avg: %s, max: %s)",
@@ -40,7 +58,7 @@
   "reggadium.extra.overlay.gametime": "Time: %s (Day %s)",
   "reggadium.extra.overlay.ping": "Ping: %sms",
 
-    "reggadium.extra.enable_extra_hud.name": "Master Extra HUD Switch",
+  "reggadium.extra.enable_extra_hud.name": "Master Extra HUD Switch",
   "reggadium.extra.enable_extra_hud.tooltip": "Master switch to globally enable or disable the Extra HUD overlay.",
 
   "reggadium.extra.show_fps.name": "Show FPS",

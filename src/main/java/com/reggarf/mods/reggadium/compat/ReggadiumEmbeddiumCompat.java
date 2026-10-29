@@ -54,10 +54,12 @@ public class ReggadiumEmbeddiumCompat {
         event.addPage(createKineticsPage());
         event.addPage(createCullingPage());
         event.addPage(createPipelinePage());
+        event.addPage(createMemoryPage());
         event.addPage(createDiagnosticsPage());
     }
 
-    // --- Option Builders ---\n
+    // --- Option Builders ---
+
     public static OptionImpl<Void, Boolean> createEnableOptimizationsOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "enable_optimizations"))
@@ -73,7 +75,7 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
-        public static OptionImpl<Void, Boolean> createEnableExtraHudOption() {
+    public static OptionImpl<Void, Boolean> createEnableExtraHudOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "enable_extra_hud"))
                 .setName(Component.translatable("reggadium.extra.enable_extra_hud.name"))
@@ -90,6 +92,7 @@ public class ReggadiumEmbeddiumCompat {
     }
 
     // --- Extra HUD Display Metrics (Inspired by Rubidium / Sodium Extra) ---
+
     public static OptionImpl<Void, Boolean> createShowFpsOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_fps"))
@@ -680,6 +683,68 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
+    // --- Memory Leak Mitigation Option Builders ---
+
+    public static OptionImpl<Void, Boolean> createFixMemoryLeaksOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_memory_leaks"))
+                .setName(Component.translatable("reggadium.options.fix_memory_leaks.name"))
+                .setTooltip(Component.translatable("reggadium.options.fix_memory_leaks.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.FIX_MEMORY_LEAKS.set(val);
+                    Config.fixMemoryLeaksEnabled = val;
+                    Config.save();
+                }, opts -> Config.fixMemoryLeaksEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createFixClientLevelLeakOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_client_level_leak"))
+                .setName(Component.translatable("reggadium.options.fix_client_level_leak.name"))
+                .setTooltip(Component.translatable("reggadium.options.fix_client_level_leak.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.FIX_CLIENT_LEVEL_LEAK.set(val);
+                    Config.fixClientLevelLeakEnabled = val;
+                    Config.save();
+                }, opts -> Config.fixClientLevelLeakEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createFixFakePlayerLeakOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_fake_player_leak"))
+                .setName(Component.translatable("reggadium.options.fix_fake_player_leak.name"))
+                .setTooltip(Component.translatable("reggadium.options.fix_fake_player_leak.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.FIX_FAKE_PLAYER_LEAK.set(val);
+                    Config.fixFakePlayerLeakEnabled = val;
+                    Config.save();
+                }, opts -> Config.fixFakePlayerLeakEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createFixDebugSubscriptionLeakOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_debug_subscription_leak"))
+                .setName(Component.translatable("reggadium.options.fix_debug_subscription_leak.name"))
+                .setTooltip(Component.translatable("reggadium.options.fix_debug_subscription_leak.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.FIX_DEBUG_SUBSCRIPTION_LEAK.set(val);
+                    Config.fixDebugSubscriptionLeakEnabled = val;
+                    Config.save();
+                }, opts -> Config.fixDebugSubscriptionLeakEnabled)
+                .setImpact(OptionImpact.LOW)
+                .build();
+    }
+
     // --- Group Builders ---
 
     public static OptionGroup createKineticStreamingGroup() {
@@ -729,14 +794,31 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
-        public static OptionGroup createExtraHudMasterGroup() {
+    public static OptionGroup createMemoryMasterGroup() {
+        return OptionGroup.createBuilder()
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "memory_master_group"))
+                .add(createFixMemoryLeaksOption())
+                .build();
+    }
+
+    public static OptionGroup createMemoryMitigationsGroup() {
+        return OptionGroup.createBuilder()
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "memory_mitigations_group"))
+                .add(createFixClientLevelLeakOption())
+                .add(createFixFakePlayerLeakOption())
+                .add(createFixDebugSubscriptionLeakOption())
+                .build();
+    }
+
+    public static OptionGroup createExtraHudMasterGroup() {
         return OptionGroup.createBuilder()
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "extra_hud_master_group"))
                 .add(createEnableExtraHudOption())
                 .build();
     }
 
-    public static OptionGroup createExtraHudMetricsGroup() {        return OptionGroup.createBuilder()
+    public static OptionGroup createExtraHudMetricsGroup() {
+        return OptionGroup.createBuilder()
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "extra_hud_metrics_group"))
                 .add(createShowFpsOption())
                 .add(createShowFpsExtendedOption())
@@ -812,10 +894,19 @@ public class ReggadiumEmbeddiumCompat {
         ));
     }
 
+    public static OptionPage createMemoryPage() {
+        OptionIdentifier<Void> pageId = OptionIdentifier.create(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "memory"));
+        Component pageTitle = Component.translatable("reggadium.options.page.memory");
+        return new OptionPage(pageId, pageTitle, ImmutableList.of(
+                createMemoryMasterGroup(),
+                createMemoryMitigationsGroup()
+        ));
+    }
+
     public static OptionPage createDiagnosticsPage() {
         OptionIdentifier<Void> pageId = OptionIdentifier.create(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "diagnostics"));
         Component pageTitle = Component.translatable("reggadium.options.page.diagnostics");
-                return new OptionPage(pageId, pageTitle, ImmutableList.of(
+        return new OptionPage(pageId, pageTitle, ImmutableList.of(
                 createExtraHudMasterGroup(),
                 createExtraHudMetricsGroup(),
                 createExtraHudLayoutGroup(),

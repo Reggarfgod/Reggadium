@@ -24,6 +24,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
         modOptions.addPage(createKineticsPage(builder));
         modOptions.addPage(createCullingPage(builder));
         modOptions.addPage(createPipelinePage(builder));
+        modOptions.addPage(createMemoryPage(builder));
         modOptions.addPage(createExtraPage(builder));
     }
 
@@ -191,6 +192,49 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
         return page;
     }
 
+    private static OptionPageBuilder createMemoryPage(ConfigBuilder builder) {
+        OptionPageBuilder page = builder.createOptionPage()
+                .setName(Component.translatable("reggadium.options.page.memory"));
+
+        OptionGroupBuilder masterGroup = builder.createOptionGroup()
+                .setName(Component.translatable("reggadium.options.group.memory_master"))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_memory_leaks"))
+                        .setName(Component.translatable("reggadium.options.fix_memory_leaks.name"))
+                        .setTooltip(Component.translatable("reggadium.options.fix_memory_leaks.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.FIX_MEMORY_LEAKS.set(val); Config.fixMemoryLeaksEnabled = val; }, () -> Config.fixMemoryLeaksEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH));
+
+        OptionGroupBuilder mitigationsGroup = builder.createOptionGroup()
+                .setName(Component.translatable("reggadium.options.group.memory_leaks"))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_client_level_leak"))
+                        .setName(Component.translatable("reggadium.options.fix_client_level_leak.name"))
+                        .setTooltip(Component.translatable("reggadium.options.fix_client_level_leak.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.FIX_CLIENT_LEVEL_LEAK.set(val); Config.fixClientLevelLeakEnabled = val; }, () -> Config.fixClientLevelLeakEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_fake_player_leak"))
+                        .setName(Component.translatable("reggadium.options.fix_fake_player_leak.name"))
+                        .setTooltip(Component.translatable("reggadium.options.fix_fake_player_leak.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.FIX_FAKE_PLAYER_LEAK.set(val); Config.fixFakePlayerLeakEnabled = val; }, () -> Config.fixFakePlayerLeakEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "fix_debug_subscription_leak"))
+                        .setName(Component.translatable("reggadium.options.fix_debug_subscription_leak.name"))
+                        .setTooltip(Component.translatable("reggadium.options.fix_debug_subscription_leak.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.FIX_DEBUG_SUBSCRIPTION_LEAK.set(val); Config.fixDebugSubscriptionLeakEnabled = val; }, () -> Config.fixDebugSubscriptionLeakEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.LOW));
+
+        page.addOptionGroup(masterGroup);
+        page.addOptionGroup(mitigationsGroup);
+        return page;
+    }
+
     private static OptionPageBuilder createExtraPage(ConfigBuilder builder) {
         OptionPageBuilder page = builder.createOptionPage()
                 .setName(Component.translatable("reggadium.options.page.extra"));
@@ -330,7 +374,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
 
         page.addOptionGroup(layoutGroup);
 
-        // Extra HUD Colors
+        // Extra HUD Color Customization
         OptionGroupBuilder colorsGroup = builder.createOptionGroup()
                 .setName(Component.translatable("reggadium.options.group.extra_hud_colors"))
                 .addOption(createColorOption(builder, "fps_color", "reggadium.extra.color.fps.name", "reggadium.extra.color.fps.tooltip",
