@@ -16,6 +16,9 @@ repositories {
         url = "https://maven.createmod.net"
     }
     maven {
+        url "https://cursemaven.com"
+    }
+    maven {
         name = "CaffeineMC"
         url = "https://maven.caffeinemc.net/releases"
     }
@@ -80,6 +83,7 @@ configurations {
 }
 
 dependencies {
+    implementation "curse.maven:neoculus-1200907:6370551"
     // Embeddium dependency (NeoForge 1.21.1)
     compileOnly "maven.modrinth:embeddium:1.0.15+mc1.21.1"
 
