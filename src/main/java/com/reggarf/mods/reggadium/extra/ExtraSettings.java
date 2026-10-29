@@ -4,6 +4,9 @@ import com.reggarf.mods.reggadium.Config;
 
 public class ExtraSettings {
 
+    // Master toggle
+    public static boolean enabled = true;
+
     // Metrics toggles
     public static boolean showFps = true;
     public static boolean showFpsExtended = false;

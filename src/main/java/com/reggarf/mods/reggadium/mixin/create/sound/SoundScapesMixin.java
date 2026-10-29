@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.sound;
 
 import com.reggarf.mods.reggadium.Config;
 import com.reggarf.mods.reggadium.culling.ReggadiumCuller;

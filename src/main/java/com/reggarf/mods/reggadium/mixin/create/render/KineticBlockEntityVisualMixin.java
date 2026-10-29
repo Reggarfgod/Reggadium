@@ -1,7 +1,9 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.render;
 
 import com.reggarf.mods.reggadium.Config;
 import com.reggarf.mods.reggadium.culling.IKineticOverstressTracker;
+import com.reggarf.mods.reggadium.mixin.create.kinetic.KineticBlockEntityAccessor;
+import com.reggarf.mods.reggadium.mixin.create.kinetic.KineticEffectHandlerAccessor;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityVisual;
 import com.simibubi.create.content.kinetics.base.KineticEffectHandler;

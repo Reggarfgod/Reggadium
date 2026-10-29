@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.reggadium.Config;
@@ -26,14 +26,13 @@ public abstract class SafeBlockEntityRendererMixin {
             return;
         }
 
-        // 1. Distance Culling: beyond 64 blocks (4096 sq), skip Create block entity rendering
+        double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
+
         if (Config.kineticCullingEnabled) {
-            if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 4096.0)) {
+            if (distSq > 2304.0) {
                 ci.cancel();
                 return;
             }
-
-            // 2. Frustum Culling
             try {
                 AABB boundingBox = getRenderBoundingBox(be);
                 if (boundingBox != null) {
@@ -53,9 +52,8 @@ public abstract class SafeBlockEntityRendererMixin {
             }
         }
 
-        // 3. Stationary Kinetic Sleep: if machine speed is 0 and distance > 24 blocks (576 sq), skip rendering
         if (Config.skipStationaryKineticsEnabled && be instanceof KineticBlockEntity kbe) {
-            if (kbe.getSpeed() == 0 && ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 576.0)) {
+            if (kbe.getSpeed() == 0 && distSq > 256.0) {
                 ci.cancel();
             }
         }

@@ -187,29 +187,25 @@ public class ReggadiumOptionsScreen extends Screen {
                             Config.save();
                         }));
 
-        // 7: Show In-Game FPS
-        this.addRenderableWidget(CycleButton.onOffBuilder(Config.showFpsEnabled)
-                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.extra.show_fps.tooltip")))
+        // 7: Entity Distance Culling
+        this.addRenderableWidget(CycleButton.onOffBuilder(Config.cullEntitiesEnabled)
+                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.options.cull_entities.tooltip")))
                 .create(rightColX, startY + spacing * 6, buttonWidth, buttonHeight,
-                        Component.translatable("reggadium.extra.show_fps.name"),
+                        Component.translatable("reggadium.options.cull_entities.name"),
                         (btn, val) -> {
-                            Config.SHOW_FPS.set(val);
-                            Config.showFpsEnabled = val;
-                            ExtraSettings.showFps = val;
+                            Config.CULL_ENTITIES.set(val);
+                            Config.cullEntitiesEnabled = val;
                             Config.save();
                         }));
 
-        // 8: HUD Scale (Cycle through 50%, 75%, 100%, 125%, 150%, 200%)
-        this.addRenderableWidget(CycleButton.<Integer>builder(val -> Component.literal(val + "%"))
-                .withValues(List.of(50, 75, 100, 125, 150, 200))
-                .withInitialValue(Config.hudScale)
-                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.extra.hud_scale.tooltip")))
+        // 8: Aggressive Tick Sleep
+        this.addRenderableWidget(CycleButton.onOffBuilder(Config.aggressiveTickSleepEnabled)
+                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.options.aggressive_tick_sleep.tooltip")))
                 .create(rightColX, startY + spacing * 7, buttonWidth, buttonHeight,
-                        Component.translatable("reggadium.extra.hud_scale.name"),
+                        Component.translatable("reggadium.options.aggressive_tick_sleep.name"),
                         (btn, val) -> {
-                            Config.HUD_SCALE.set(val);
-                            Config.hudScale = val;
-                            ExtraSettings.hudScale = val;
+                            Config.AGGRESSIVE_TICK_SLEEP.set(val);
+                            Config.aggressiveTickSleepEnabled = val;
                             Config.save();
                         }));
 

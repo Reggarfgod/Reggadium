@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.reggarf.mods.reggadium.Config;
@@ -19,7 +19,11 @@ public class ParticleMixin {
             return;
         }
 
-        if (!ReggadiumCuller.isParticleVisible((SingleQuadParticle) (Object) this, partialTicks)) {
+        ParticleAccessor accessor = (ParticleAccessor) this;
+        double x = accessor.reggadium$getX();
+        double y = accessor.reggadium$getY();
+        double z = accessor.reggadium$getZ();
+        if (ReggadiumCuller.isBeyondDistance(x, y, z, 2304.0) || !ReggadiumCuller.isPointVisible(x, y, z, 0.75)) {
             ci.cancel();
         }
     }

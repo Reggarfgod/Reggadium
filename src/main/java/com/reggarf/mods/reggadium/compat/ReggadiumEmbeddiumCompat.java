@@ -73,8 +73,23 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
-    // --- Extra HUD Display Metrics (Inspired by Rubidium / Sodium Extra) ---
+        public static OptionImpl<Void, Boolean> createEnableExtraHudOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "enable_extra_hud"))
+                .setName(Component.translatable("reggadium.extra.enable_extra_hud.name"))
+                .setTooltip(Component.translatable("reggadium.extra.enable_extra_hud.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.ENABLE_EXTRA_HUD.set(val);
+                    Config.extraHudEnabled = val;
+                    ExtraSettings.enabled = val;
+                    Config.save();
+                }, opts -> Config.extraHudEnabled)
+                .setImpact(OptionImpact.LOW)
+                .build();
+    }
 
+    // --- Extra HUD Display Metrics (Inspired by Rubidium / Sodium Extra) ---
     public static OptionImpl<Void, Boolean> createShowFpsOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_fps"))
@@ -560,6 +575,66 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
+    public static OptionImpl<Void, Boolean> createCullEntitiesOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "cull_entities"))
+                .setName(Component.translatable("reggadium.options.cull_entities.name"))
+                .setTooltip(Component.translatable("reggadium.options.cull_entities.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.CULL_ENTITIES.set(val);
+                    Config.cullEntitiesEnabled = val;
+                    Config.save();
+                }, opts -> Config.cullEntitiesEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createCullShadowsOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "cull_shadows"))
+                .setName(Component.translatable("reggadium.options.cull_shadows.name"))
+                .setTooltip(Component.translatable("reggadium.options.cull_shadows.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.CULL_SHADOWS.set(val);
+                    Config.cullShadowsEnabled = val;
+                    Config.save();
+                }, opts -> Config.cullShadowsEnabled)
+                .setImpact(OptionImpact.MEDIUM)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createCreateFxCullOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "create_fx_cull"))
+                .setName(Component.translatable("reggadium.options.create_fx_cull.name"))
+                .setTooltip(Component.translatable("reggadium.options.create_fx_cull.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.CREATE_FX_CULL.set(val);
+                    Config.createFxCullEnabled = val;
+                    Config.save();
+                }, opts -> Config.createFxCullEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
+    public static OptionImpl<Void, Boolean> createAggressiveTickSleepOption() {
+        return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "aggressive_tick_sleep"))
+                .setName(Component.translatable("reggadium.options.aggressive_tick_sleep.name"))
+                .setTooltip(Component.translatable("reggadium.options.aggressive_tick_sleep.tooltip"))
+                .setControl(TickBoxControl::new)
+                .setBinding((opts, val) -> {
+                    Config.AGGRESSIVE_TICK_SLEEP.set(val);
+                    Config.aggressiveTickSleepEnabled = val;
+                    Config.save();
+                }, opts -> Config.aggressiveTickSleepEnabled)
+                .setImpact(OptionImpact.HIGH)
+                .build();
+    }
+
     public static OptionImpl<Void, Boolean> createCullParticlesOption() {
         return OptionImpl.createBuilder(Boolean.class, ReggadiumOptionsStorage.INSTANCE)
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "cull_particles"))
@@ -625,6 +700,8 @@ public class ReggadiumEmbeddiumCompat {
                 .add(createKineticAudioThrottlingOption())
                 .add(createKineticLodOption())
                 .add(createReduceBlockEntityLagOption())
+                .add(createCreateFxCullOption())
+                .add(createAggressiveTickSleepOption())
                 .build();
     }
 
@@ -633,6 +710,8 @@ public class ReggadiumEmbeddiumCompat {
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "frustum_culling_group"))
                 .add(createCullBlockEntitiesOption())
                 .add(createCullParticlesOption())
+                .add(createCullEntitiesOption())
+                .add(createCullShadowsOption())
                 .build();
     }
 
@@ -650,8 +729,14 @@ public class ReggadiumEmbeddiumCompat {
                 .build();
     }
 
-    public static OptionGroup createExtraHudMetricsGroup() {
+        public static OptionGroup createExtraHudMasterGroup() {
         return OptionGroup.createBuilder()
+                .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "extra_hud_master_group"))
+                .add(createEnableExtraHudOption())
+                .build();
+    }
+
+    public static OptionGroup createExtraHudMetricsGroup() {        return OptionGroup.createBuilder()
                 .setId(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "extra_hud_metrics_group"))
                 .add(createShowFpsOption())
                 .add(createShowFpsExtendedOption())
@@ -730,7 +815,8 @@ public class ReggadiumEmbeddiumCompat {
     public static OptionPage createDiagnosticsPage() {
         OptionIdentifier<Void> pageId = OptionIdentifier.create(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "diagnostics"));
         Component pageTitle = Component.translatable("reggadium.options.page.diagnostics");
-        return new OptionPage(pageId, pageTitle, ImmutableList.of(
+                return new OptionPage(pageId, pageTitle, ImmutableList.of(
+                createExtraHudMasterGroup(),
                 createExtraHudMetricsGroup(),
                 createExtraHudLayoutGroup(),
                 createExtraHudColorsGroup(),

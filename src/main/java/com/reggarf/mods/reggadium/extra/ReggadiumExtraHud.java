@@ -36,7 +36,7 @@ public class ReggadiumExtraHud implements LayeredDraw.Layer {
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        if (!Config.optimizationsEnabled) {
+        if (!ExtraSettings.enabled) {
             return;
         }
 

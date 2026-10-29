@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.kinetic;
 
 import com.reggarf.mods.reggadium.Config;
 import com.reggarf.mods.reggadium.culling.IKineticOverstressTracker;
@@ -46,29 +46,38 @@ public class KineticBlockEntityMixin implements IKineticOverstressTracker {
             return;
         }
 
+        int stagger = be.getBlockPos().getX() + be.getBlockPos().getZ();
+        long time = level.getGameTime();
+
         if (level.isClientSide) {
-            // Client-side kinetic optimization
-            // 1. Distant kinetic components (>32 blocks away): sound is inaudible and rotation is shader-driven
-            if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 1024.0)) {
-                if (((level.getGameTime() + be.getBlockPos().hashCode()) & 19) != 0) {
+            double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
+
+            if (Config.skipStationaryKineticsEnabled && be.getSpeed() == 0.0f) {
+                if (((time + stagger) & 31) != 0) {
                     ci.cancel();
                     return;
                 }
             }
 
-            // 2. Stationary kinetics on client produce no audio and no particles
-            if (Config.skipStationaryKineticsEnabled && be.getSpeed() == 0.0f) {
-                if (((level.getGameTime() + be.getBlockPos().hashCode()) & 19) != 0) {
+            if (Config.reduceBlockEntityLagEnabled || Config.aggressiveTickSleepEnabled) {
+                int mask;
+                if (distSq > 4096.0) {
+                    mask = 31;
+                } else if (distSq > 1024.0) {
+                    mask = 15;
+                } else if (distSq > 256.0 && Config.aggressiveTickSleepEnabled) {
+                    mask = 3;
+                } else {
+                    mask = 0;
+                }
+                if (mask != 0 && ((time + stagger) & mask) != 0) {
                     ci.cancel();
-                    return;
                 }
             }
         } else {
-            // Server-side kinetic optimization
-            // Stationary components with stable networks and no pending updates sleep the tick
             if (Config.skipStationaryKineticsEnabled && be.getSpeed() == 0.0f
                     && !be.needsSpeedUpdate() && !be.networkDirty && be.getFlickerScore() == 0) {
-                if (((level.getGameTime() + be.getBlockPos().hashCode()) & 15) != 0) {
+                if (((time + stagger) & 15) != 0) {
                     ci.cancel();
                 }
             }

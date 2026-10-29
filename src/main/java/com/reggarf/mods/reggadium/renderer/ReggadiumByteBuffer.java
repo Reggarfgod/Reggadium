@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.reggarf.mods.reggadium.Config;
-import com.reggarf.mods.reggadium.mixin.BufferBuilderAccessor;
+import com.reggarf.mods.reggadium.mixin.render.BufferBuilderAccessor;
 import it.unimi.dsi.fastutil.longs.Long2IntMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import net.createmod.catnip.render.SpriteShiftEntry;
@@ -64,7 +64,7 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
     private static final Vector2f UV3 = new Vector2f();
 
     // Native vertex scratch buffer for direct writing
-    private static final int BUFFER_VERTEX_COUNT = 64;
+    private static final int BUFFER_VERTEX_COUNT = 256;
     private static final MemoryStack STACK = MemoryStack.create();
     private static final int BUFFER_SIZE = BUFFER_VERTEX_COUNT * EntityVertex.STRIDE;
     private static final long SCRATCH_BUFFER = MemoryUtil.nmemAlignedAlloc(64, BUFFER_SIZE);
@@ -249,13 +249,16 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
         return java.lang.Math.min(1.0f, (light0 + light1) * 0.6f + 0.4f);
     }
 
+    public static void clearLightCache() {
+        if (!WORLD_LIGHT_CACHE.isEmpty()) {
+            WORLD_LIGHT_CACHE.clear();
+        }
+    }
+
     public static int getLight(BlockAndTintGetter world, Vector3f lightPos) {
         if (world == null) return 0xf000f0;
         BlockPos pos = BlockPos.containing(lightPos.x(), lightPos.y(), lightPos.z());
         if (Config.fastLightCacheEnabled) {
-            if (WORLD_LIGHT_CACHE.size() > 8192) {
-                WORLD_LIGHT_CACHE.clear();
-            }
             return WORLD_LIGHT_CACHE.computeIfAbsent(pos.asLong(), $ -> LevelRenderer.getLightColor(world, pos));
         } else {
             return LevelRenderer.getLightColor(world, pos);

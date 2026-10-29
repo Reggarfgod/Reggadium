@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.kinetic;
 
 import com.reggarf.mods.reggadium.Config;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;

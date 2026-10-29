@@ -40,6 +40,9 @@
   "reggadium.extra.overlay.gametime": "Time: %s (Day %s)",
   "reggadium.extra.overlay.ping": "Ping: %sms",
 
+    "reggadium.extra.enable_extra_hud.name": "Master Extra HUD Switch",
+  "reggadium.extra.enable_extra_hud.tooltip": "Master switch to globally enable or disable the Extra HUD overlay.",
+
   "reggadium.extra.show_fps.name": "Show FPS",
   "reggadium.extra.show_fps.tooltip": "Displays real-time frame rate with dynamic color coding on screen.",
 
@@ -165,5 +168,17 @@
   "reggadium.options.optimize_contraptions.tooltip": "Applies distance-based level-of-detail to moving contraptions, skipping detailed actor animation passes when far away.",
 
   "reggadium.options.optimize_entity_rendering.name": "Native Vertex Buffer Formatting",
-  "reggadium.options.optimize_entity_rendering.tooltip": "Formats entity and block entity vertices directly into native GPU memory structures to eliminate memory allocation spikes."
+  "reggadium.options.optimize_entity_rendering.tooltip": "Formats entity and block entity vertices directly into native GPU memory structures to eliminate memory allocation spikes.",
+
+  "reggadium.options.cull_entities.name": "Entity Distance Culling",
+  "reggadium.options.cull_entities.tooltip": "Skips rendering dropped items, XP orbs and distant non-player entities to reclaim GPU and CPU time.",
+
+  "reggadium.options.cull_shadows.name": "Distant Shadow Culling",
+  "reggadium.options.cull_shadows.tooltip": "Disables entity shadow rendering beyond 16 blocks, cutting fill-rate waste in dense factories.",
+
+  "reggadium.options.create_fx_cull.name": "Create FX Throttling",
+  "reggadium.options.create_fx_cull.tooltip": "Throttles Create fans, air currents, depot extras and idle overstress FX when far away or stopped.",
+
+  "reggadium.options.aggressive_tick_sleep.name": "Aggressive Kinetic Sleep",
+  "reggadium.options.aggressive_tick_sleep.tooltip": "Sleeps distant Create client ticks more aggressively for maximum factory FPS and smoothness."
 }

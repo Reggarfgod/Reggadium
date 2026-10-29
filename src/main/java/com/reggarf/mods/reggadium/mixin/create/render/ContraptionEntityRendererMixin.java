@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.reggadium.Config;
@@ -26,8 +26,7 @@ public class ContraptionEntityRendererMixin {
             return;
         }
 
-        // Distance culling for huge contraptions beyond 96 blocks (9216 sq)
-        if (ReggadiumCuller.isBeyondDistance(entity.position(), 9216.0)) {
+        if (ReggadiumCuller.isBeyondDistance(entity.position(), 4096.0)) {
             cir.setReturnValue(false);
         }
     }
@@ -39,8 +38,7 @@ public class ContraptionEntityRendererMixin {
         }
 
         if (contraption.entity != null) {
-            // If contraption is far away (> 32 blocks = 1024 sq), skip rendering actor animations to preserve FPS
-            if (ReggadiumCuller.isBeyondDistance(contraption.entity.position(), 1024.0)) {
+            if (ReggadiumCuller.isBeyondDistance(contraption.entity.position(), 576.0)) {
                 ci.cancel();
             }
         }

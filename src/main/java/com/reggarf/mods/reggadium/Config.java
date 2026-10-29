@@ -20,6 +20,7 @@ public class Config {
     public static final ModConfigSpec.BooleanValue SHOW_FPS;
 
     // Extra / HUD Category
+    public static final ModConfigSpec.BooleanValue ENABLE_EXTRA_HUD;
     public static final ModConfigSpec.BooleanValue SHOW_FPS_EXTENDED;
     public static final ModConfigSpec.BooleanValue SHOW_COORDS;
     public static final ModConfigSpec.BooleanValue SHOW_FACING;
@@ -58,6 +59,10 @@ public class Config {
     public static final ModConfigSpec.BooleanValue CULL_BLOCK_ENTITIES;
     public static final ModConfigSpec.BooleanValue CULL_PARTICLES;
     public static final ModConfigSpec.BooleanValue REDUCE_BLOCK_ENTITY_LAG;
+    public static final ModConfigSpec.BooleanValue CULL_ENTITIES;
+    public static final ModConfigSpec.BooleanValue CULL_SHADOWS;
+    public static final ModConfigSpec.BooleanValue CREATE_FX_CULL;
+    public static final ModConfigSpec.BooleanValue AGGRESSIVE_TICK_SLEEP;
 
     // Quality Category
     public static final ModConfigSpec.BooleanValue OPTIMIZE_CONTRAPTIONS;
@@ -77,6 +82,9 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("extra");
+        ENABLE_EXTRA_HUD = BUILDER
+                .comment("Master switch to globally enable or disable the Extra HUD overlay")
+                .define("enableExtraHud", true);
         SHOW_FPS_EXTENDED = BUILDER
                 .comment("Display extended FPS metrics (lowest, average, highest framerate)")
                 .define("showFpsExtended", false);
@@ -214,6 +222,22 @@ public class Config {
         REDUCE_BLOCK_ENTITY_LAG = BUILDER
                 .comment("Reduce kinetic block entity overhead when outside visible view or frustum")
                 .define("reduceBlockEntityLag", true);
+
+        CULL_ENTITIES = BUILDER
+                .comment("Distance-cull dropped items, XP orbs and other non-player entities")
+                .define("cullEntities", true);
+
+        CULL_SHADOWS = BUILDER
+                .comment("Skip entity shadow rendering beyond 16 blocks")
+                .define("cullShadows", true);
+
+        CREATE_FX_CULL = BUILDER
+                .comment("Throttle Create fans, air currents and overstress FX when distant or idle")
+                .define("createFxCull", true);
+
+        AGGRESSIVE_TICK_SLEEP = BUILDER
+                .comment("Sleep distant Create client ticks more aggressively for maximum factory FPS")
+                .define("aggressiveTickSleep", true);
         BUILDER.pop();
 
         BUILDER.push("quality");
@@ -233,6 +257,7 @@ public class Config {
 
     public static boolean optimizationsEnabled = true;
     public static boolean showFpsEnabled = true;
+    public static boolean extraHudEnabled = true;
 
     public static boolean showFpsExtendedEnabled = false;
     public static boolean showCoordsEnabled = false;
@@ -271,6 +296,10 @@ public class Config {
     public static boolean cullBlockEntitiesEnabled = true;
     public static boolean cullParticlesEnabled = true;
     public static boolean reduceBlockEntityLagEnabled = true;
+    public static boolean cullEntitiesEnabled = true;
+    public static boolean cullShadowsEnabled = true;
+    public static boolean createFxCullEnabled = true;
+    public static boolean aggressiveTickSleepEnabled = true;
 
     public static boolean optimizeContraptionsEnabled = true;
 
@@ -289,6 +318,7 @@ public class Config {
     public static void onLoad(final ModConfigEvent event) {
         optimizationsEnabled = ENABLE_OPTIMIZATIONS.get();
         showFpsEnabled = SHOW_FPS.get();
+        extraHudEnabled = ENABLE_EXTRA_HUD.get();
 
         showFpsExtendedEnabled = SHOW_FPS_EXTENDED.get();
         showCoordsEnabled = SHOW_COORDS.get();
@@ -317,6 +347,7 @@ public class Config {
         pingColor = PING_COLOR.get();
 
         // Sync with ExtraSettings
+        ExtraSettings.enabled = extraHudEnabled;
         ExtraSettings.showFps = showFpsEnabled;
         ExtraSettings.showFpsExtended = showFpsExtendedEnabled;
         ExtraSettings.showCoords = showCoordsEnabled;
@@ -355,6 +386,10 @@ public class Config {
         cullBlockEntitiesEnabled = CULL_BLOCK_ENTITIES.get();
         cullParticlesEnabled = CULL_PARTICLES.get();
         reduceBlockEntityLagEnabled = REDUCE_BLOCK_ENTITY_LAG.get();
+        cullEntitiesEnabled = CULL_ENTITIES.get();
+        cullShadowsEnabled = CULL_SHADOWS.get();
+        createFxCullEnabled = CREATE_FX_CULL.get();
+        aggressiveTickSleepEnabled = AGGRESSIVE_TICK_SLEEP.get();
 
         optimizeContraptionsEnabled = OPTIMIZE_CONTRAPTIONS.get();
 

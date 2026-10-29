@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.reggadium.Config;
@@ -24,23 +24,17 @@ public class KineticBlockEntityRendererMixin {
             return;
         }
 
-        // Kinetic Frustum & Distance Culling
+        double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
+
         if (Config.kineticCullingEnabled) {
-            if (!ReggadiumCuller.isBlockEntityVisible(be)) {
-                ci.cancel();
-                return;
-            }
-            if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 4096.0)) {
+            if (distSq > 4096.0 || !ReggadiumCuller.isBlockEntityVisible(be)) {
                 ci.cancel();
                 return;
             }
         }
 
-        // Stationary Kinetic Sleep
-        if (Config.skipStationaryKineticsEnabled && be.getSpeed() == 0) {
-            if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 576.0)) {
-                ci.cancel();
-            }
+        if (Config.skipStationaryKineticsEnabled && be.getSpeed() == 0 && distSq > 256.0) {
+            ci.cancel();
         }
     }
 
@@ -50,11 +44,11 @@ public class KineticBlockEntityRendererMixin {
             return;
         }
 
-        // Level of Detail: beyond 24 blocks (576 sq), quantize rotation animation to eliminate vertex transformation jitter
-        if (ReggadiumCuller.isBeyondDistance(pos, 576.0)) {
+        double distSq = ReggadiumCuller.distanceSq(pos);
+        if (distSq > 256.0) {
             float time = AnimationTickHolder.getRenderTime(be.getLevel());
-            // Quantize time to 25 FPS steps (0.04s)
-            time = ((int) (time * 25.0f)) / 25.0f;
+            float steps = distSq > 1024.0 ? 10.0f : 20.0f;
+            time = ((int) (time * steps)) / steps;
             float offset = KineticBlockEntityRenderer.getRotationOffsetForPosition(be, pos, axis);
             float angle = ((time * be.getSpeed() * 3f / 10f) + offset) % 360 / 180 * (float) Math.PI;
             cir.setReturnValue(angle);

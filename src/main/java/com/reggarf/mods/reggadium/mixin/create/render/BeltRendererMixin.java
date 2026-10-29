@@ -1,4 +1,4 @@
-package com.reggarf.mods.reggadium.mixin;
+package com.reggarf.mods.reggadium.mixin.create.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.reggadium.Config;
@@ -33,12 +33,8 @@ public class BeltRendererMixin {
             return;
         }
 
-        if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 4096.0)) {
-            ci.cancel();
-            return;
-        }
-
-        if (!ReggadiumCuller.isBlockEntityVisible(be)) {
+        double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
+        if (distSq > 2304.0 || !ReggadiumCuller.isBlockEntityVisible(be)) {
             ci.cancel();
         }
     }
@@ -49,14 +45,7 @@ public class BeltRendererMixin {
             return;
         }
 
-        // Distance culling for transported items: beyond 32 blocks (1024 sq), skip item rendering entirely
-        if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 1024.0)) {
-            ci.cancel();
-            return;
-        }
-
-        // Frustum culling: if belt is not visible, don't render items
-        if (!ReggadiumCuller.isBlockEntityVisible(be)) {
+        if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 576.0) || !ReggadiumCuller.isBlockEntityVisible(be)) {
             ci.cancel();
         }
     }

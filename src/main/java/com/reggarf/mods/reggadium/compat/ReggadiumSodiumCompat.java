@@ -102,7 +102,21 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setStorageHandler(Config::save)
                         .setBinding(val -> { Config.REDUCE_BLOCK_ENTITY_LAG.set(val); Config.reduceBlockEntityLagEnabled = val; }, () -> Config.reduceBlockEntityLagEnabled)
                         .setDefaultValue(true)
-                        .setImpact(OptionImpact.LOW));
+                        .setImpact(OptionImpact.LOW))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "create_fx_cull"))
+                        .setName(Component.translatable("reggadium.options.create_fx_cull.name"))
+                        .setTooltip(Component.translatable("reggadium.options.create_fx_cull.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.CREATE_FX_CULL.set(val); Config.createFxCullEnabled = val; }, () -> Config.createFxCullEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "aggressive_tick_sleep"))
+                        .setName(Component.translatable("reggadium.options.aggressive_tick_sleep.name"))
+                        .setTooltip(Component.translatable("reggadium.options.aggressive_tick_sleep.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.AGGRESSIVE_TICK_SLEEP.set(val); Config.aggressiveTickSleepEnabled = val; }, () -> Config.aggressiveTickSleepEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH));
 
         page.addOptionGroup(cullingGroup);
         return page;
@@ -127,7 +141,21 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setStorageHandler(Config::save)
                         .setBinding(val -> { Config.CULL_PARTICLES.set(val); Config.cullParticlesEnabled = val; }, () -> Config.cullParticlesEnabled)
                         .setDefaultValue(true)
-                        .setImpact(OptionImpact.HIGH));
+                        .setImpact(OptionImpact.HIGH))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "cull_entities"))
+                        .setName(Component.translatable("reggadium.options.cull_entities.name"))
+                        .setTooltip(Component.translatable("reggadium.options.cull_entities.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.CULL_ENTITIES.set(val); Config.cullEntitiesEnabled = val; }, () -> Config.cullEntitiesEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.HIGH))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "cull_shadows"))
+                        .setName(Component.translatable("reggadium.options.cull_shadows.name"))
+                        .setTooltip(Component.translatable("reggadium.options.cull_shadows.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.CULL_SHADOWS.set(val); Config.cullShadowsEnabled = val; }, () -> Config.cullShadowsEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.MEDIUM));
 
         page.addOptionGroup(frustumGroup);
 
@@ -166,6 +194,18 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
     private static OptionPageBuilder createExtraPage(ConfigBuilder builder) {
         OptionPageBuilder page = builder.createOptionPage()
                 .setName(Component.translatable("reggadium.options.page.extra"));
+        // Extra HUD Master Switch
+        OptionGroupBuilder masterGroup = builder.createOptionGroup()
+                .setName(Component.translatable("reggadium.options.group.extra_hud"))
+                .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "enable_extra_hud"))
+                        .setName(Component.translatable("reggadium.extra.enable_extra_hud.name"))
+                        .setTooltip(Component.translatable("reggadium.extra.enable_extra_hud.tooltip"))
+                        .setStorageHandler(Config::save)
+                        .setBinding(val -> { Config.ENABLE_EXTRA_HUD.set(val); Config.extraHudEnabled = val; ExtraSettings.enabled = val; }, () -> Config.extraHudEnabled)
+                        .setDefaultValue(true)
+                        .setImpact(OptionImpact.LOW));
+
+        page.addOptionGroup(masterGroup);
 
         // Extra HUD Metrics
         OptionGroupBuilder metricsGroup = builder.createOptionGroup()
