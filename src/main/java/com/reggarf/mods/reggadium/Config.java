@@ -64,6 +64,14 @@ public class Config {
     public static final ModConfigSpec.BooleanValue CREATE_FX_CULL;
     public static final ModConfigSpec.BooleanValue AGGRESSIVE_TICK_SLEEP;
 
+    // Memory & Leak Mitigation Category
+    public static final ModConfigSpec.BooleanValue FIX_MEMORY_LEAKS;
+    public static final ModConfigSpec.BooleanValue FIX_CLIENT_LEVEL_LEAK;
+    public static final ModConfigSpec.BooleanValue FIX_FAKE_PLAYER_LEAK;
+    public static final ModConfigSpec.BooleanValue FIX_ENTITY_TICK_LIST_LEAK;
+    public static final ModConfigSpec.BooleanValue FIX_DEBUG_SUBSCRIPTION_LEAK;
+    public static final ModConfigSpec.BooleanValue CLEAR_MIXIN_CLASS_INFO;
+
     // Quality Category
     public static final ModConfigSpec.BooleanValue OPTIMIZE_CONTRAPTIONS;
 
@@ -138,11 +146,11 @@ public class Config {
                 .defineEnum("backgroundOpacity", BackgroundOpacity.MEDIUM);
 
         COORD_PRECISION = BUILDER
-                .comment("Decimal precision for XYZ coordinates display")
+                .comment("Coordinate decimal display precision")
                 .defineEnum("coordPrecision", CoordPrecision.TWO_DECIMALS);
 
         FPS_COLOR = BUILDER
-                .comment("Color for FPS overlay text")
+                .comment("Color for Framerate overlay text")
                 .defineEnum("fpsColor", HudColor.DYNAMIC);
 
         COORDS_COLOR = BUILDER
@@ -240,6 +248,32 @@ public class Config {
                 .define("aggressiveTickSleep", true);
         BUILDER.pop();
 
+        BUILDER.push("memory");
+        FIX_MEMORY_LEAKS = BUILDER
+                .comment("Master switch for Reggadium memory leak mitigations and object lifecycle cleanup")
+                .define("fixMemoryLeaks", true);
+
+        FIX_CLIENT_LEVEL_LEAK = BUILDER
+                .comment("Propagate LevelEvent.Unload on client disconnection to prevent ClientLevel and renderer caches from leaking")
+                .define("fixClientLevelLeak", true);
+
+        FIX_FAKE_PLAYER_LEAK = BUILDER
+                .comment("Detach advancement listeners for FakePlayers (Create deployers, miners) to fix NeoForge Issue #1487")
+                .define("fixFakePlayerLeak", true);
+
+        FIX_ENTITY_TICK_LIST_LEAK = BUILDER
+                .comment("Clear passive entity collection in EntityTickList to eliminate entity reference leaks during world ticks")
+                .define("fixEntityTickListLeak", true);
+
+        FIX_DEBUG_SUBSCRIPTION_LEAK = BUILDER
+                .comment("Remove expired subscriptions from DebugSampleSubscriptionTracker to prevent unbounded queue growth")
+                .define("fixDebugSubscriptionLeak", true);
+
+        CLEAR_MIXIN_CLASS_INFO = BUILDER
+                .comment("Reclaim SpongePowered Mixin ClassInfo ASM metadata cache after bootstrap to save 100MB-250MB heap")
+                .define("clearMixinClassInfo", true);
+        BUILDER.pop();
+
         BUILDER.push("quality");
         OPTIMIZE_CONTRAPTIONS = BUILDER
                 .comment("Optimize and LOD cull distant moving contraption actors and detailed parts")
@@ -300,6 +334,13 @@ public class Config {
     public static boolean cullShadowsEnabled = true;
     public static boolean createFxCullEnabled = true;
     public static boolean aggressiveTickSleepEnabled = true;
+
+    public static boolean fixMemoryLeaksEnabled = true;
+    public static boolean fixClientLevelLeakEnabled = true;
+    public static boolean fixFakePlayerLeakEnabled = true;
+    public static boolean fixEntityTickListLeakEnabled = true;
+    public static boolean fixDebugSubscriptionLeakEnabled = true;
+    public static boolean clearMixinClassInfoEnabled = true;
 
     public static boolean optimizeContraptionsEnabled = true;
 
@@ -390,6 +431,13 @@ public class Config {
         cullShadowsEnabled = CULL_SHADOWS.get();
         createFxCullEnabled = CREATE_FX_CULL.get();
         aggressiveTickSleepEnabled = AGGRESSIVE_TICK_SLEEP.get();
+
+        fixMemoryLeaksEnabled = FIX_MEMORY_LEAKS.get();
+        fixClientLevelLeakEnabled = FIX_CLIENT_LEVEL_LEAK.get();
+        fixFakePlayerLeakEnabled = FIX_FAKE_PLAYER_LEAK.get();
+        fixEntityTickListLeakEnabled = FIX_ENTITY_TICK_LIST_LEAK.get();
+        fixDebugSubscriptionLeakEnabled = FIX_DEBUG_SUBSCRIPTION_LEAK.get();
+        clearMixinClassInfoEnabled = CLEAR_MIXIN_CLASS_INFO.get();
 
         optimizeContraptionsEnabled = OPTIMIZE_CONTRAPTIONS.get();
 
