@@ -11,21 +11,8 @@
 
 <br/>
 
-<img src="docs/images/reggadium_banner.jpg" alt="Reggadium Banner" width="100%" />
-
-<br/>
-
 **Reggadium** is a comprehensive, client-side performance modification built specifically for **Minecraft 1.21.1 on NeoForge**. Designed from the ground up for modded environments, Reggadium introduces modern low-level rendering optimizations, zero-allocation block entity frustum culling, and deep specialized performance pipelines for the **Create Mod** alongside native **Embeddium** and **Sodium** integration.
 
-</div>
-
----
-
-## 📸 In-Game Showcase
-
-<div align="center">
-  <img src="docs/images/reggadium_hud_showcase.jpg" alt="Reggadium In-Game Showcase" width="100%" />
-  <p><i>A massive Create factory running with rock-solid framerates, zero-allocation culling, and the customizable Reggadium Extra HUD.</i></p>
 </div>
 
 ---
