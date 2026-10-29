@@ -215,7 +215,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setTooltip(Component.translatable("reggadium.extra.show_fps.tooltip"))
                         .setStorageHandler(Config::save)
                         .setBinding(val -> { Config.SHOW_FPS.set(val); Config.showFpsEnabled = val; ExtraSettings.showFps = val; }, () -> Config.showFpsEnabled)
-                        .setDefaultValue(false)
+                        .setDefaultValue(true)
                         .setImpact(OptionImpact.LOW))
                 .addOption(builder.createBooleanOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "show_fps_extended"))
                         .setName(Component.translatable("reggadium.extra.show_fps_extended.name"))
@@ -309,7 +309,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setElementNameProvider(TextContrast::getDisplayName)
                         .setStorageHandler(Config::save)
                         .setBinding(val -> { Config.TEXT_CONTRAST.set(val); Config.textContrast = val; ExtraSettings.textContrast = val; }, () -> Config.textContrast)
-                        .setDefaultValue(TextContrast.BACKGROUND)
+                        .setDefaultValue(TextContrast.SHADOW)
                         .setImpact(OptionImpact.LOW))
                 .addOption(builder.createEnumOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, "background_opacity"), BackgroundOpacity.class)
                         .setName(Component.translatable("reggadium.extra.background_opacity.name"))
@@ -325,7 +325,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                         .setElementNameProvider(CoordPrecision::getDisplayName)
                         .setStorageHandler(Config::save)
                         .setBinding(val -> { Config.COORD_PRECISION.set(val); Config.coordPrecision = val; ExtraSettings.coordPrecision = val; }, () -> Config.coordPrecision)
-                        .setDefaultValue(CoordPrecision.INTEGER)
+                        .setDefaultValue(CoordPrecision.TWO_DECIMALS)
                         .setImpact(OptionImpact.LOW));
 
         page.addOptionGroup(layoutGroup);
@@ -334,23 +334,23 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
         OptionGroupBuilder colorsGroup = builder.createOptionGroup()
                 .setName(Component.translatable("reggadium.options.group.extra_hud_colors"))
                 .addOption(createColorOption(builder, "fps_color", "reggadium.extra.color.fps.name", "reggadium.extra.color.fps.tooltip",
-                        val -> { Config.FPS_COLOR.set(val); Config.fpsColor = val; ExtraSettings.fpsColor = val; }, () -> Config.fpsColor))
+                        val -> { Config.FPS_COLOR.set(val); Config.fpsColor = val; ExtraSettings.fpsColor = val; }, () -> Config.fpsColor, HudColor.DYNAMIC))
                 .addOption(createColorOption(builder, "coords_color", "reggadium.extra.color.coords.name", "reggadium.extra.color.coords.tooltip",
-                        val -> { Config.COORDS_COLOR.set(val); Config.coordsColor = val; ExtraSettings.coordsColor = val; }, () -> Config.coordsColor))
+                        val -> { Config.COORDS_COLOR.set(val); Config.coordsColor = val; ExtraSettings.coordsColor = val; }, () -> Config.coordsColor, HudColor.WHITE))
                 .addOption(createColorOption(builder, "facing_color", "reggadium.extra.color.facing.name", "reggadium.extra.color.facing.tooltip",
-                        val -> { Config.FACING_COLOR.set(val); Config.facingColor = val; ExtraSettings.facingColor = val; }, () -> Config.facingColor))
+                        val -> { Config.FACING_COLOR.set(val); Config.facingColor = val; ExtraSettings.facingColor = val; }, () -> Config.facingColor, HudColor.GRAY))
                 .addOption(createColorOption(builder, "biome_color", "reggadium.extra.color.biome.name", "reggadium.extra.color.biome.tooltip",
-                        val -> { Config.BIOME_COLOR.set(val); Config.biomeColor = val; ExtraSettings.biomeColor = val; }, () -> Config.biomeColor))
+                        val -> { Config.BIOME_COLOR.set(val); Config.biomeColor = val; ExtraSettings.biomeColor = val; }, () -> Config.biomeColor, HudColor.CYAN))
                 .addOption(createColorOption(builder, "memory_color", "reggadium.extra.color.memory.name", "reggadium.extra.color.memory.tooltip",
-                        val -> { Config.MEMORY_COLOR.set(val); Config.memoryColor = val; ExtraSettings.memoryColor = val; }, () -> Config.memoryColor))
+                        val -> { Config.MEMORY_COLOR.set(val); Config.memoryColor = val; ExtraSettings.memoryColor = val; }, () -> Config.memoryColor, HudColor.DYNAMIC))
                 .addOption(createColorOption(builder, "cpu_color", "reggadium.extra.color.cpu.name", "reggadium.extra.color.cpu.tooltip",
-                        val -> { Config.CPU_COLOR.set(val); Config.cpuColor = val; ExtraSettings.cpuColor = val; }, () -> Config.cpuColor))
+                        val -> { Config.CPU_COLOR.set(val); Config.cpuColor = val; ExtraSettings.cpuColor = val; }, () -> Config.cpuColor, HudColor.DYNAMIC))
                 .addOption(createColorOption(builder, "gpu_color", "reggadium.extra.color.gpu.name", "reggadium.extra.color.gpu.tooltip",
-                        val -> { Config.GPU_COLOR.set(val); Config.gpuColor = val; ExtraSettings.gpuColor = val; }, () -> Config.gpuColor))
+                        val -> { Config.GPU_COLOR.set(val); Config.gpuColor = val; ExtraSettings.gpuColor = val; }, () -> Config.gpuColor, HudColor.DYNAMIC))
                 .addOption(createColorOption(builder, "time_color", "reggadium.extra.color.time.name", "reggadium.extra.color.time.tooltip",
-                        val -> { Config.TIME_COLOR.set(val); Config.timeColor = val; ExtraSettings.timeColor = val; }, () -> Config.timeColor))
+                        val -> { Config.TIME_COLOR.set(val); Config.timeColor = val; ExtraSettings.timeColor = val; }, () -> Config.timeColor, HudColor.GOLD))
                 .addOption(createColorOption(builder, "ping_color", "reggadium.extra.color.ping.name", "reggadium.extra.color.ping.tooltip",
-                        val -> { Config.PING_COLOR.set(val); Config.pingColor = val; ExtraSettings.pingColor = val; }, () -> Config.pingColor));
+                        val -> { Config.PING_COLOR.set(val); Config.pingColor = val; ExtraSettings.pingColor = val; }, () -> Config.pingColor, HudColor.DYNAMIC));
 
         page.addOptionGroup(colorsGroup);
 
@@ -376,7 +376,8 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
             String nameKey,
             String tooltipKey,
             Consumer<HudColor> setter,
-            Supplier<HudColor> getter
+            Supplier<HudColor> getter,
+            HudColor defaultValue
     ) {
         return builder.createEnumOption(ResourceLocation.fromNamespaceAndPath(Reggadium.MODID, id), HudColor.class)
                 .setName(Component.translatable(nameKey))
@@ -384,7 +385,7 @@ public class ReggadiumSodiumCompat implements ConfigEntryPoint {
                 .setElementNameProvider(HudColor::getDisplayName)
                 .setStorageHandler(Config::save)
                 .setBinding(setter::accept, getter::get)
-                .setDefaultValue(HudColor.DYNAMIC)
+                .setDefaultValue(defaultValue)
                 .setImpact(OptionImpact.LOW);
     }
 }

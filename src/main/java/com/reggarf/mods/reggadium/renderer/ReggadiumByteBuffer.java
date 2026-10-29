@@ -531,7 +531,7 @@ public class ReggadiumByteBuffer implements SuperByteBuffer {
             NativeVertexWriter writer = NativeVertexWriter.tryOf(builder);
             if (writer != null && builder instanceof BufferBuilder bb) {
                 VertexFormat format = ((BufferBuilderAccessor) bb).reggadium$getFormat();
-                if (format == BlockVertex.FORMAT || format == EntityVertex.FORMAT) {
+                if (format == BlockVertex.FORMAT || (format == EntityVertex.FORMAT && Config.optimizeEntityRenderingEnabled)) {
                     acceleratedRenderInto(input, writer, format);
                     return true;
                 }

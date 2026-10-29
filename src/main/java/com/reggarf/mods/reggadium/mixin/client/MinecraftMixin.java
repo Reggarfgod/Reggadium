@@ -29,6 +29,6 @@ public class MinecraftMixin {
             )
     )
     private boolean reggadium$enableGpuTimerForExtraHud(DebugScreenOverlay debugOverlay) {
-        return debugOverlay.showDebugScreen() || (Config.optimizationsEnabled && ExtraSettings.showGpu);
+        return debugOverlay.showDebugScreen() || (ExtraSettings.enabled && ExtraSettings.showGpu);
     }
 }

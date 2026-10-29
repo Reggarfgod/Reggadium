@@ -120,6 +120,18 @@ public class ReggadiumOptionsScreen extends Screen {
                             Config.save();
                         }));
 
+        // 9: Extra HUD Master Switch
+        this.addRenderableWidget(CycleButton.onOffBuilder(Config.extraHudEnabled)
+                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.extra.enable_extra_hud.tooltip")))
+                .create(leftColX, startY + spacing * 8, buttonWidth, buttonHeight,
+                        Component.translatable("reggadium.extra.enable_extra_hud.name"),
+                        (btn, val) -> {
+                            Config.ENABLE_EXTRA_HUD.set(val);
+                            Config.extraHudEnabled = val;
+                            ExtraSettings.enabled = val;
+                            Config.save();
+                        }));
+
         // --- Right Column: Contraptions & General Performance ---
         // 1: Optimize Contraptions
         this.addRenderableWidget(CycleButton.onOffBuilder(Config.optimizeContraptionsEnabled)
@@ -209,13 +221,24 @@ public class ReggadiumOptionsScreen extends Screen {
                             Config.save();
                         }));
 
+        // 9: Distant Shadow Culling
+        this.addRenderableWidget(CycleButton.onOffBuilder(Config.cullShadowsEnabled)
+                .withTooltip(val -> Tooltip.create(Component.translatable("reggadium.options.cull_shadows.tooltip")))
+                .create(rightColX, startY + spacing * 8, buttonWidth, buttonHeight,
+                        Component.translatable("reggadium.options.cull_shadows.name"),
+                        (btn, val) -> {
+                            Config.CULL_SHADOWS.set(val);
+                            Config.cullShadowsEnabled = val;
+                            Config.save();
+                        }));
+
         // Done button
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, btn -> {
             Config.save();
             if (this.minecraft != null) {
                 this.minecraft.setScreen(this.lastScreen);
             }
-        }).bounds(centerX - 100, Math.max(startY + spacing * 8 + 4, this.height - 26), 200, 20).build());
+        }).bounds(centerX - 100, Math.max(startY + spacing * 9 + 4, this.height - 26), 200, 20).build());
     }
 
     @Override
