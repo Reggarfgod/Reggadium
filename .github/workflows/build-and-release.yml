@@ -1,0 +1,121 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read mod version from gradle.properties
+        id: mod_info
+        run: |
+          VERSION=$(grep -E "^mod_version\s*=" gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not find 'mod_version' in gradle.properties"
+            exit 1
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted mod version: ${VERSION}"
+
+      - name: Check if release tag already exists
+        id: check_tag
+        run: |
+          TAG="${{ steps.mod_info.outputs.tag }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "Tag $TAG exists, but workflow was dispatched manually. Proceeding with build."
+              echo "exists=false" >> $GITHUB_OUTPUT
+            else
+              echo "Tag $TAG already exists. Skipping release build."
+              echo "exists=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Tag $TAG does not exist. Proceeding with build."
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Java 21
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permissions for Gradle wrapper
+        if: steps.check_tag.outputs.exists == 'false'
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          # Strip local developer Java home path if present
+          sed -i '/^org\.gradle\.java\.home/d' gradle.properties
+          ./gradlew jar -x test --no-daemon
+
+      - name: Collect build artifacts
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          mkdir -p release_artifacts
+          find build/libs -type f -name "*.jar" \
+            ! -name "*-sources.jar" \
+            ! -name "*-javadoc.jar" \
+            ! -name "*-dev.jar" \
+            ! -name "*unobf*.jar" | while read -r jar; do
+              filename=$(basename "$jar")
+              cp -v "$jar" "release_artifacts/${filename}"
+          done
+
+          echo "=== Staged files for release ==="
+          ls -lh release_artifacts/
+
+          if [ -z "$(ls -A release_artifacts)" ]; then
+            echo "::error::No release artifacts found!"
+            exit 1
+          fi
+
+      - name: Generate Changelog
+        if: steps.check_tag.outputs.exists == 'false'
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "## What's Changed" > CHANGELOG.md
+          if [ -z "$PREV_TAG" ]; then
+            git log --pretty=format:"* %s (%h)" >> CHANGELOG.md
+          else
+            git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" >> CHANGELOG.md
+          fi
+          echo "" >> CHANGELOG.md
+
+      - name: Create Git Tag and GitHub Release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.mod_info.outputs.tag }}
+          name: Release ${{ steps.mod_info.outputs.version }}
+          body_path: CHANGELOG.md
+          files: release_artifacts/*.jar
+          draft: false
+          prerelease: ${{ contains(steps.mod_info.outputs.version, 'beta') || contains(steps.mod_info.outputs.version, 'alpha') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
