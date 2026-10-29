@@ -22,7 +22,6 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.slf4j.Logger;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Map;
@@ -37,7 +36,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 2. FakePlayer advancement listener detached lifecycle (NeoForge Issue #1487).
  * 3. LivingEntity damage source reference clearing.
  * 4. Flywheel LevelAttached world-cache invalidation.
- * 5. SpongePowered Mixin ClassInfo ASM cache reclamation (100MB-250MB heap save).
  */
 @EventBusSubscriber(modid = Reggadium.MODID)
 public class ReggadiumMemoryManager {
@@ -45,7 +43,6 @@ public class ReggadiumMemoryManager {
 
     public static final AtomicInteger LAST_UNLOADED_LEVEL_HASH = new AtomicInteger();
     private static final Map<UUID, PlayerAdvancements> FAKE_PLAYER_ADVANCEMENTS = Maps.newHashMap();
-    private static boolean mixinClassInfoCleaned = false;
 
     /**
      * Obtains or creates a sandboxed PlayerAdvancements instance for a FakePlayer.
@@ -163,29 +160,6 @@ public class ReggadiumMemoryManager {
             mc.crosshairPickEntity = null;
             mc.hitResult = null;
         } catch (Throwable ignored) {
-        }
-    }
-
-    /**
-     * Reclaims SpongePowered Mixin ClassInfo ASM cache after bootstrap.
-     * Can free between 100MB and 250MB of permanent Java heap space.
-     */
-    public static void cleanMixinClassInfo() {
-        if (mixinClassInfoCleaned || !Config.clearMixinClassInfoEnabled) return;
-        mixinClassInfoCleaned = true;
-
-        try {
-            Class<?> classInfoClass = Class.forName("org.spongepowered.asm.mixin.transformer.ClassInfo");
-            Field cacheField = classInfoClass.getDeclaredField("cache");
-            cacheField.setAccessible(true);
-            Object cacheObj = cacheField.get(null);
-            if (cacheObj instanceof Map<?, ?> cacheMap) {
-                int size = cacheMap.size();
-                cacheMap.clear();
-                LOGGER.info("[Reggadium] Successfully cleared SpongePowered Mixin ClassInfo cache ({} entries reclaimed)", size);
-            }
-        } catch (Throwable t) {
-            LOGGER.debug("[Reggadium] ClassInfo cache clearing skipped or unsupported: {}", t.getMessage());
         }
     }
 

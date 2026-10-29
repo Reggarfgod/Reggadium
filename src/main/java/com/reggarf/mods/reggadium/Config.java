@@ -68,9 +68,7 @@ public class Config {
     public static final ModConfigSpec.BooleanValue FIX_MEMORY_LEAKS;
     public static final ModConfigSpec.BooleanValue FIX_CLIENT_LEVEL_LEAK;
     public static final ModConfigSpec.BooleanValue FIX_FAKE_PLAYER_LEAK;
-    public static final ModConfigSpec.BooleanValue FIX_ENTITY_TICK_LIST_LEAK;
     public static final ModConfigSpec.BooleanValue FIX_DEBUG_SUBSCRIPTION_LEAK;
-    public static final ModConfigSpec.BooleanValue CLEAR_MIXIN_CLASS_INFO;
 
     // Quality Category
     public static final ModConfigSpec.BooleanValue OPTIMIZE_CONTRAPTIONS;
@@ -106,11 +104,11 @@ public class Config {
                 .define("showFacing", false);
 
         SHOW_BIOME = BUILDER
-                .comment("Display current biome name on screen")
+                .comment("Display player current biome name on screen")
                 .define("showBiome", false);
 
         SHOW_MEMORY = BUILDER
-                .comment("Display current memory / RAM allocation on screen")
+                .comment("Display JVM memory / RAM allocation usage on screen")
                 .define("showMemory", false);
 
         SHOW_CPU = BUILDER
@@ -261,17 +259,9 @@ public class Config {
                 .comment("Detach advancement listeners for FakePlayers (Create deployers, miners) to fix NeoForge Issue #1487")
                 .define("fixFakePlayerLeak", true);
 
-        FIX_ENTITY_TICK_LIST_LEAK = BUILDER
-                .comment("Clear passive entity collection in EntityTickList to eliminate entity reference leaks during world ticks")
-                .define("fixEntityTickListLeak", true);
-
         FIX_DEBUG_SUBSCRIPTION_LEAK = BUILDER
                 .comment("Remove expired subscriptions from DebugSampleSubscriptionTracker to prevent unbounded queue growth")
                 .define("fixDebugSubscriptionLeak", true);
-
-        CLEAR_MIXIN_CLASS_INFO = BUILDER
-                .comment("Reclaim SpongePowered Mixin ClassInfo ASM metadata cache after bootstrap to save 100MB-250MB heap")
-                .define("clearMixinClassInfo", true);
         BUILDER.pop();
 
         BUILDER.push("quality");
@@ -338,9 +328,7 @@ public class Config {
     public static boolean fixMemoryLeaksEnabled = true;
     public static boolean fixClientLevelLeakEnabled = true;
     public static boolean fixFakePlayerLeakEnabled = true;
-    public static boolean fixEntityTickListLeakEnabled = true;
     public static boolean fixDebugSubscriptionLeakEnabled = true;
-    public static boolean clearMixinClassInfoEnabled = true;
 
     public static boolean optimizeContraptionsEnabled = true;
 
@@ -435,9 +423,7 @@ public class Config {
         fixMemoryLeaksEnabled = FIX_MEMORY_LEAKS.get();
         fixClientLevelLeakEnabled = FIX_CLIENT_LEVEL_LEAK.get();
         fixFakePlayerLeakEnabled = FIX_FAKE_PLAYER_LEAK.get();
-        fixEntityTickListLeakEnabled = FIX_ENTITY_TICK_LIST_LEAK.get();
         fixDebugSubscriptionLeakEnabled = FIX_DEBUG_SUBSCRIPTION_LEAK.get();
-        clearMixinClassInfoEnabled = CLEAR_MIXIN_CLASS_INFO.get();
 
         optimizeContraptionsEnabled = OPTIMIZE_CONTRAPTIONS.get();
 
