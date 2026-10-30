@@ -1,8 +1,22 @@
-# Project exclude paths
-/.gradle/
-/build/
-/build/classes/java/main/
-/run/
-/runs/
+# Gradle & build outputs
+.gradle/
+build/
+bin/
+out/
+
+# Minecraft client / server run directories
+run/
+runs/
+
+# IDE files
 .idea/
 *.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db

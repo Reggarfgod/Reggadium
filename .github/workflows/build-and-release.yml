@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - Multi-Ver
     paths-ignore:
       - '**.md'
       - '.github/ISSUE_TEMPLATE/**'
@@ -71,13 +72,13 @@ jobs:
         run: |
           # Strip local developer Java home path if present
           sed -i '/^org\.gradle\.java\.home/d' gradle.properties
-          ./gradlew jar -x test --no-daemon
+          ./gradlew assemble -x test --no-daemon
 
       - name: Collect build artifacts
         if: steps.check_tag.outputs.exists == 'false'
         run: |
           mkdir -p release_artifacts
-          find build/libs -type f -name "*.jar" \
+          find . -path "*/build/libs/*.jar" \
             ! -name "*-sources.jar" \
             ! -name "*-javadoc.jar" \
             ! -name "*-dev.jar" \

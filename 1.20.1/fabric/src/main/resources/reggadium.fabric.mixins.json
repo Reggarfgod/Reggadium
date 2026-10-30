@@ -1,0 +1,11 @@
+{
+  "required": false,
+  "package": "com.reggarf.mods.reggadium.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "SodiumOptionsGUIMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

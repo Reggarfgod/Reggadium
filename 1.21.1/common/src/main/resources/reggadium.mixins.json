@@ -1,0 +1,53 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.reggarf.mods.reggadium.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "client.GameRendererMixin",
+    "client.LevelRendererAccessor",
+    "client.LevelRendererMixin",
+    "client.MinecraftMixin",
+    "client.VideoSettingsScreenMixin",
+    "create.kinetic.AirCurrentMixin",
+    "create.kinetic.BeltBlockEntityMixin",
+    "create.kinetic.ContraptionColliderMixin",
+    "create.kinetic.EncasedFanBlockEntityMixin",
+    "create.kinetic.KineticBlockEntityAccessor",
+    "create.kinetic.KineticBlockEntityMixin",
+    "create.kinetic.KineticEffectHandlerAccessor",
+    "create.kinetic.KineticEffectHandlerMixin",
+    "create.kinetic.SmartBlockEntityMixin",
+    "create.render.BeltRendererMixin",
+    "create.render.ContraptionEntityRendererMixin",
+    "create.render.DepotRendererMixin",
+    "create.render.KineticBlockEntityRendererMixin",
+    "create.render.KineticBlockEntityVisualMixin",
+    "create.render.SafeBlockEntityRendererMixin",
+    "create.render.ShadedBlockSbbBuilderMixin",
+    "create.render.SuperBufferFactoryMixin",
+    "create.sound.SoundScapesMixin",
+    "memory.LivingEntityTickMixin",
+    "memory.MinecraftLevelUnloadMixin",
+    "memory.PlayerListAdvancementsMixin",
+    "memory.ServerPlayerAdvancementsMixin",
+    "particle.ParticleAccessor",
+    "particle.ParticleEngineMixin",
+    "particle.ParticleMixin",
+    "render.BlockEntityMixin",
+    "render.BlockEntityRenderDispatcherMixin",
+    "render.BufferBuilderAccessor",
+    "render.EntityRenderDispatcherMixin",
+    "render.FrustumInvoker",
+    "render.ItemEntityRendererMixin",
+    "sound.SoundEngineMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
