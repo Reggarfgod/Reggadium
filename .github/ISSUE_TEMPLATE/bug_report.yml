@@ -36,6 +36,8 @@ body:
       description: Select which mod loader you are using.
       options:
         - NeoForge
+        - Forge 
+        - Fabric
         - Other (specify in description)
     validations:
       required: true
