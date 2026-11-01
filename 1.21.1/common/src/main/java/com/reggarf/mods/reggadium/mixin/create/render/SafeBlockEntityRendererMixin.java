@@ -29,10 +29,15 @@ public abstract class SafeBlockEntityRendererMixin {
             return;
         }
 
+        // Never cull block entities that are part of a contraption, aeronautics ship, or virtual world
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         BlockPos pos = be.getBlockPos();
         double distSq = ReggadiumCuller.distanceSq(pos);
 
-        if (Config.kineticCullingEnabled) {
+        if (Config.kineticCullingEnabled && be instanceof KineticBlockEntity) {
             if (distSq > 2304.0) {
                 ci.cancel();
                 return;

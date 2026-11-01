@@ -25,6 +25,11 @@ public abstract class BlockEntityRenderDispatcherMixin {
             return;
         }
 
+        // Never cull block entities that are part of a contraption, aeronautics ship, or virtual world
+        if (ReggadiumCuller.isVirtualOrOnShip(blockEntity)) {
+            return;
+        }
+
         if (ReggadiumCuller.isBeyondDistance(blockEntity.getBlockPos(), 2304.0)) {
             ci.cancel();
             return;

@@ -28,8 +28,13 @@ public class AirCurrentMixin {
             return;
         }
         BlockPos pos = this.source.getAirCurrentPos();
-        if (pos != null && ReggadiumCuller.isBeyondDistance(pos, 1024.0)) {
-            ci.cancel();
+        if (pos != null) {
+            if (level.getClass().getName().contains("Virtual") || level.getClass().getName().contains("Ship") || ReggadiumCuller.isOnVSShip(level, pos)) {
+                return;
+            }
+            if (ReggadiumCuller.isBeyondDistance(pos, 1024.0)) {
+                ci.cancel();
+            }
         }
     }
 
@@ -43,8 +48,13 @@ public class AirCurrentMixin {
             return;
         }
         BlockPos pos = this.source.getAirCurrentPos();
-        if (pos != null && ReggadiumCuller.isBeyondDistance(pos, 2304.0)) {
-            ci.cancel();
+        if (pos != null) {
+            if (level.getClass().getName().contains("Virtual") || level.getClass().getName().contains("Ship") || ReggadiumCuller.isOnVSShip(level, pos)) {
+                return;
+            }
+            if (ReggadiumCuller.isBeyondDistance(pos, 2304.0)) {
+                ci.cancel();
+            }
         }
     }
 }

@@ -19,6 +19,11 @@ public class DepotRendererMixin {
         if (!Config.optimizationsEnabled || !Config.cullBlockEntitiesEnabled) {
             return;
         }
+
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         if (ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 1024.0) || !ReggadiumCuller.isBlockEntityVisible(be)) {
             ci.cancel();
         }

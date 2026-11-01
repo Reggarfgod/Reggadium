@@ -21,6 +21,10 @@ public class BeltRendererMixin {
             return;
         }
 
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         // If the belt is not in frustum or beyond 48 blocks, don't force off-screen rendering
         if (!ReggadiumCuller.isBlockEntityVisible(be) || ReggadiumCuller.isBeyondDistance(be.getBlockPos(), 2304.0)) {
             cir.setReturnValue(false);
@@ -33,6 +37,10 @@ public class BeltRendererMixin {
             return;
         }
 
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
         if (distSq > 2304.0 || !ReggadiumCuller.isBlockEntityVisible(be)) {
             ci.cancel();
@@ -42,6 +50,10 @@ public class BeltRendererMixin {
     @Inject(method = "renderItems", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderItems(BeltBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
         if (!Config.optimizationsEnabled || !Config.cullBeltsEnabled) {
+            return;
+        }
+
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
             return;
         }
 

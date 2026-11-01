@@ -8,6 +8,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.Method;
 
 public class ReggadiumCuller {
 
@@ -41,6 +44,11 @@ public class ReggadiumCuller {
     private static boolean hasCamPos = false;
     private static Frustum cachedFrustum = null;
 
+    private static boolean vsChecked = false;
+    private static Method vsGetShipManagingBlock = null;
+    private static Method vsGetShipManagingPos = null;
+    private static Method vsIsBlockInShipyard = null;
+
     public static void beginFrame(@Nullable Camera camera, @Nullable Frustum frustum) {
         if (camera != null) {
             Vec3 pos = camera.getPosition();
@@ -54,21 +62,14 @@ public class ReggadiumCuller {
         cachedFrustum = frustum;
     }
 
-    public static void updateCameraPosition(Camera camera) {
-        if (camera != null) {
-            Vec3 pos = camera.getPosition();
-            camX = pos.x;
-            camY = pos.y;
-            camZ = pos.z;
-            hasCamPos = true;
-        }
-    }
-
     private static void ensureCamPos() {
         if (!hasCamPos) {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.gameRenderer != null && mc.gameRenderer.getMainCamera() != null) {
-                updateCameraPosition(mc.gameRenderer.getMainCamera());
+            Vec3 pos = cameraPos();
+            if (pos != null) {
+                camX = pos.x;
+                camY = pos.y;
+                camZ = pos.z;
+                hasCamPos = true;
             }
         }
     }
@@ -79,27 +80,18 @@ public class ReggadiumCuller {
         }
         Minecraft mc = Minecraft.getInstance();
         if (mc.levelRenderer != null) {
-            try {
-                return ((LevelRendererAccessor) mc.levelRenderer).reggadium$getCullingFrustum();
-            } catch (Throwable ignored) {
-            }
+            return ((LevelRendererAccessor) mc.levelRenderer).reggadium$getCullingFrustum();
         }
         return null;
     }
 
-    public static double getCamX() {
-        ensureCamPos();
-        return camX;
-    }
-
-    public static double getCamY() {
-        ensureCamPos();
-        return camY;
-    }
-
-    public static double getCamZ() {
-        ensureCamPos();
-        return camZ;
+    private static Vec3 cameraPos() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.gameRenderer == null) {
+            return null;
+        }
+        Camera camera = mc.gameRenderer.getMainCamera();
+        return camera == null ? null : camera.getPosition();
     }
 
     public static boolean isCubeVisible(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
@@ -130,7 +122,7 @@ public class ReggadiumCuller {
                     if (block == Blocks.BEACON || block == Blocks.END_GATEWAY
                             || block == Blocks.END_PORTAL || block == Blocks.STRUCTURE_BLOCK) {
                         kind = KIND_ALWAYS_VISIBLE;
-                    } else if (block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST || block == Blocks.ENDER_CHEST) {
+                    } else if (block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST) {
                         kind = KIND_CHEST;
                     } else {
                         kind = KIND_STANDARD;
@@ -253,5 +245,80 @@ public class ReggadiumCuller {
         double dy = y - camY;
         double dz = z - camZ;
         return dx * dx + dy * dy + dz * dz;
+    }
+
+    private static void initValkyrienSkies() {
+        if (vsChecked) return;
+        vsChecked = true;
+        try {
+            Class<?> vsClass = Class.forName("org.valkyrienskies.mod.api.ValkyrienSkies");
+            for (Method m : vsClass.getMethods()) {
+                if (m.getName().equals("getShipManagingBlock") && m.getParameterCount() == 2) {
+                    vsGetShipManagingBlock = m;
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {}
+
+        if (vsGetShipManagingBlock == null) {
+            try {
+                Class<?> vsGameUtils = Class.forName("org.valkyrienskies.mod.common.VSGameUtilsKt");
+                for (Method m : vsGameUtils.getMethods()) {
+                    if (m.getName().equals("getShipManagingPos") && m.getParameterCount() == 2) {
+                        vsGetShipManagingPos = m;
+                    } else if (m.getName().equals("isBlockInShipyard") && m.getParameterCount() == 2) {
+                        vsIsBlockInShipyard = m;
+                    }
+                }
+            } catch (Throwable ignored) {}
+        }
+    }
+
+    public static boolean isOnVSShip(Level level, BlockPos pos) {
+        if (level == null || pos == null) return false;
+        initValkyrienSkies();
+        try {
+            if (vsGetShipManagingBlock != null) {
+                return vsGetShipManagingBlock.invoke(null, level, pos) != null;
+            }
+            if (vsGetShipManagingPos != null) {
+                return vsGetShipManagingPos.invoke(null, level, pos) != null;
+            }
+            if (vsIsBlockInShipyard != null) {
+                return Boolean.TRUE.equals(vsIsBlockInShipyard.invoke(null, level, pos));
+            }
+        } catch (Throwable ignored) {}
+
+        // Valkyrien Skies shipyard coordinate heuristic
+        int x = pos.getX();
+        int z = pos.getZ();
+        return Math.abs(x) >= 65536 || Math.abs(z) >= 65536;
+    }
+
+    public static boolean isVirtualOrOnShip(BlockEntity be) {
+        if (be == null) {
+            return true;
+        }
+        Level level = be.getLevel();
+        if (level == null) {
+            return true;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null && level != mc.level) {
+            return true;
+        }
+        String className = level.getClass().getName();
+        if (className.contains("Virtual") || className.contains("Contraption")
+                || className.contains("Ship") || className.contains("Ponder")) {
+            return true;
+        }
+        try {
+            Method m = be.getClass().getMethod("isVirtual");
+            if (Boolean.TRUE.equals(m.invoke(be))) {
+                return true;
+            }
+        } catch (Throwable ignored) {}
+
+        return isOnVSShip(level, be.getBlockPos());
     }
 }

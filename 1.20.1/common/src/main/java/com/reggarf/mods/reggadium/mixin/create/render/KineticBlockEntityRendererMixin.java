@@ -28,6 +28,10 @@ public class KineticBlockEntityRendererMixin {
             return;
         }
 
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
 
         if (Config.kineticCullingEnabled) {
@@ -48,6 +52,10 @@ public class KineticBlockEntityRendererMixin {
             return;
         }
 
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         double distSq = ReggadiumCuller.distanceSq(pos);
         if (distSq > 256.0) {
             float time = getCreateRenderTime(be.getLevel());
@@ -59,18 +67,18 @@ public class KineticBlockEntityRendererMixin {
         }
     }
 
-    private static float getCreateRenderTime(Level world) {
+    private static float getCreateRenderTime(Level level) {
         try {
             Class<?> catnipClass = Class.forName("net.createmod.catnip.animation.AnimationTickHolder");
             Method m = catnipClass.getMethod("getRenderTime", Level.class);
-            return ((Number) m.invoke(null, world)).floatValue();
-        } catch (Throwable t) {
+            return (float) m.invoke(null, level);
+        } catch (Throwable t1) {
             try {
-                Class<?> createClass = Class.forName("com.simibubi.create.foundation.utility.AnimationTickHolder");
-                Method m = createClass.getMethod("getRenderTime", Level.class);
-                return ((Number) m.invoke(null, world)).floatValue();
+                Class<?> animClass = Class.forName("com.simibubi.create.foundation.utility.AnimationTickHolder");
+                Method m = animClass.getMethod("getRenderTime", Level.class);
+                return (float) m.invoke(null, level);
             } catch (Throwable t2) {
-                return world != null ? (float) world.getGameTime() : 0.0f;
+                return (float) (System.currentTimeMillis() % 3600000L) / 50.0f;
             }
         }
     }

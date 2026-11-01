@@ -7,6 +7,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.Method;
 
 public class ReggadiumCuller {
 
@@ -39,6 +42,11 @@ public class ReggadiumCuller {
     private static double camZ;
     private static boolean hasCamPos = false;
     private static Frustum cachedFrustum = null;
+
+    private static boolean vsChecked = false;
+    private static Method vsGetShipManagingBlock = null;
+    private static Method vsGetShipManagingPos = null;
+    private static Method vsIsBlockInShipyard = null;
 
     public static void beginFrame(@Nullable Camera camera, @Nullable Frustum frustum) {
         if (camera != null) {
@@ -236,5 +244,80 @@ public class ReggadiumCuller {
         double dy = y - camY;
         double dz = z - camZ;
         return dx * dx + dy * dy + dz * dz;
+    }
+
+    private static void initValkyrienSkies() {
+        if (vsChecked) return;
+        vsChecked = true;
+        try {
+            Class<?> vsClass = Class.forName("org.valkyrienskies.mod.api.ValkyrienSkies");
+            for (Method m : vsClass.getMethods()) {
+                if (m.getName().equals("getShipManagingBlock") && m.getParameterCount() == 2) {
+                    vsGetShipManagingBlock = m;
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {}
+
+        if (vsGetShipManagingBlock == null) {
+            try {
+                Class<?> vsGameUtils = Class.forName("org.valkyrienskies.mod.common.VSGameUtilsKt");
+                for (Method m : vsGameUtils.getMethods()) {
+                    if (m.getName().equals("getShipManagingPos") && m.getParameterCount() == 2) {
+                        vsGetShipManagingPos = m;
+                    } else if (m.getName().equals("isBlockInShipyard") && m.getParameterCount() == 2) {
+                        vsIsBlockInShipyard = m;
+                    }
+                }
+            } catch (Throwable ignored) {}
+        }
+    }
+
+    public static boolean isOnVSShip(Level level, BlockPos pos) {
+        if (level == null || pos == null) return false;
+        initValkyrienSkies();
+        try {
+            if (vsGetShipManagingBlock != null) {
+                return vsGetShipManagingBlock.invoke(null, level, pos) != null;
+            }
+            if (vsGetShipManagingPos != null) {
+                return vsGetShipManagingPos.invoke(null, level, pos) != null;
+            }
+            if (vsIsBlockInShipyard != null) {
+                return Boolean.TRUE.equals(vsIsBlockInShipyard.invoke(null, level, pos));
+            }
+        } catch (Throwable ignored) {}
+
+        // Valkyrien Skies shipyard coordinate heuristic
+        int x = pos.getX();
+        int z = pos.getZ();
+        return Math.abs(x) >= 65536 || Math.abs(z) >= 65536;
+    }
+
+    public static boolean isVirtualOrOnShip(BlockEntity be) {
+        if (be == null) {
+            return true;
+        }
+        Level level = be.getLevel();
+        if (level == null) {
+            return true;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null && level != mc.level) {
+            return true;
+        }
+        String className = level.getClass().getName();
+        if (className.contains("Virtual") || className.contains("Contraption")
+                || className.contains("Ship") || className.contains("Ponder")) {
+            return true;
+        }
+        try {
+            Method m = be.getClass().getMethod("isVirtual");
+            if (Boolean.TRUE.equals(m.invoke(be))) {
+                return true;
+            }
+        } catch (Throwable ignored) {}
+
+        return isOnVSShip(level, be.getBlockPos());
     }
 }

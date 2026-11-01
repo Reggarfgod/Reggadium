@@ -28,7 +28,8 @@ public class ContraptionEntityRendererMixin {
         }
 
         Entity e = (Entity) (Object) entity;
-        if (ReggadiumCuller.isBeyondDistance(e.position(), 4096.0)) {
+        // Large contraptions, trains, and airships can span long distances; use 16384.0 (128 blocks) to prevent clipping visible ships
+        if (ReggadiumCuller.isBeyondDistance(e.position(), 16384.0)) {
             cir.setReturnValue(false);
         }
     }
@@ -41,7 +42,8 @@ public class ContraptionEntityRendererMixin {
 
         if (contraption.entity != null) {
             Entity ce = (Entity) (Object) contraption.entity;
-            if (ReggadiumCuller.isBeyondDistance(ce.position(), 576.0)) {
+            // 2304.0 (48 blocks) allows actors on larger ships/contraptions to stay visible
+            if (ReggadiumCuller.isBeyondDistance(ce.position(), 2304.0)) {
                 ci.cancel();
             }
         }

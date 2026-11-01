@@ -26,6 +26,10 @@ public class KineticBlockEntityRendererMixin {
             return;
         }
 
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
+            return;
+        }
+
         double distSq = ReggadiumCuller.distanceSq(be.getBlockPos());
 
         if (Config.kineticCullingEnabled) {
@@ -43,6 +47,10 @@ public class KineticBlockEntityRendererMixin {
     @Inject(method = "getAngleForBe", at = @At("HEAD"), cancellable = true, require = 0)
     private static void onGetAngleForBe(KineticBlockEntity be, BlockPos pos, Direction.Axis axis, CallbackInfoReturnable<Float> cir) {
         if (!Config.optimizationsEnabled || !Config.kineticLodEnabled) {
+            return;
+        }
+
+        if (ReggadiumCuller.isVirtualOrOnShip(be)) {
             return;
         }
 
