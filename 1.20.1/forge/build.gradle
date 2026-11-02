@@ -3,45 +3,47 @@ plugins {
     id 'maven-publish'
 }
 
+version = mod_version
+group = mod_group_id
+
 base {
     archivesName = "${mod_id}-forge-1.20.1"
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(project.java_version_1_20 as int)
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    options.release = project.java_version_1_20 as int
-}
-
-def java17Launcher = javaToolchains.launcherFor {
-    languageVersion = JavaLanguageVersion.of(project.java_version_1_20 as int)
-}
-
-tasks.withType(JavaExec).configureEach {
-    javaLauncher = java17Launcher
-}
-
-sourceSets.main.java {
-    srcDir 'src/main/java'
-    srcDir file('../common/src/main/java')
-}
-
-sourceSets.main.resources {
-    srcDir file('../common/src/main/resources')
 }
 
 loom {
     silentMojangMappingsLicense()
 
     forge {
-        mixinConfig "${mod_id}.mixins.json"
-        mixinConfig "${mod_id}.forge.mixins.json"
+        mixinConfig "reggadium.mixins.json"
+        mixinConfig "reggadium.forge.mixins.json"
     }
+
+    runs {
+        client {
+            client()
+            name "Forge Client 1.20.1"
+            runDir "run"
+            programArgs "-mixin.config", "reggadium.mixins.json"
+            programArgs "-mixin.config", "reggadium.forge.mixins.json"
+        }
+        server {
+            server()
+            name "Forge Server 1.20.1"
+            runDir "run"
+            programArgs "-mixin.config", "reggadium.mixins.json"
+            programArgs "-mixin.config", "reggadium.forge.mixins.json"
+        }
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    srcDir file('../common/src/main/resources')
+}
+
+sourceSets.main.java {
+    srcDir 'src/main/java'
+    srcDir file('../common/src/main/java')
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -91,6 +93,13 @@ dependencies {
     modLocalRuntime name: "flywheel-forge-1.20.1-0.6.11-13"
     modLocalRuntime name: "Registrate-MC1.20-1.3.3"
 
+    // Test environment optimization & compat mods
+    modLocalRuntime("maven.modrinth:createbetterfps:1.1.2") { transitive = false }
+    modLocalRuntime("maven.modrinth:create-nowheel:2.1.1+1.20.1forge") { transitive = false }
+    modLocalRuntime("maven.modrinth:entityculling:1.11.3") { transitive = false }
+    modLocalRuntime("maven.modrinth:colorwheel:1.3.1+mc1.20.1") { transitive = false }
+    modLocalRuntime("maven.modrinth:flerovium:1.2.19") { transitive = false }
+
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
     modImplementation("io.github.llamalad7:mixinextras-forge:0.4.1")
@@ -113,18 +122,21 @@ tasks.named('jar', Jar).configure {
 
 processResources {
     var replaceProperties = [
-            minecraft_version          : minecraft_version_1_20,
-            forge_version              : forge_version_1_20,
-            mod_id                     : mod_id,
-            mod_name                   : mod_name,
-            mod_version                : mod_version,
-            version                    : mod_version,
-            mod_authors                : mod_authors,
-            mod_author                 : mod_authors,
-            mod_description            : mod_description,
-            description                : mod_description,
-            mod_license                : mod_license,
-            license                    : mod_license
+            minecraft_version      : minecraft_version_1_20,
+            minecraft_version_range: "[1.20.1,1.21)",
+            forge_version          : forge_version_1_20,
+            forge_loader_version_range: "[47,)",
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            license                : mod_license,
+            mod_version            : mod_version,
+            version                : mod_version,
+            mod_authors            : mod_authors,
+            mod_author             : mod_authors,
+            mod_description        : mod_description,
+            description            : mod_description,
+            credits                : credits
     ]
     inputs.properties replaceProperties
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
