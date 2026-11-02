@@ -31,3 +31,14 @@ allprojects {
         }
     }
 }
+
+tasks.named('assemble') {
+    doLast {
+        copy {
+            from subprojects.collect { "${it.buildDir}/libs" }
+            into file("${rootDir}/output")
+            include "*.jar"
+            exclude "*-dev.jar", "*-sources.jar"
+        }
+    }
+}
