@@ -66,12 +66,6 @@ tasks.withType(ProcessResources).configureEach {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-configurations {
-    modRuntime {
-        transitive = false
-    }
-}
-
 dependencies {
     // Embeddium (optional, compile-only)
     compileOnly "maven.modrinth:embeddium:1.0.15+mc1.21.1"
@@ -91,30 +85,9 @@ dependencies {
     // Ponder API
     compileOnly "net.createmod.ponder:Ponder-NeoForge-1.21.1:1.0.46"
 
-    // Runtime mods for runClient
-    modRuntime "maven.modrinth:embeddium:1.0.15+mc1.21.1"
-    modRuntime "maven.modrinth:create:1.21.1-6.0.5"
-
-    // Test environment optimization & compat mods
-    modRuntime "maven.modrinth:createbetterfps:1.1.5"
-    modRuntime "maven.modrinth:create-nowheel:2.1.1+1.21.1neoforge"
-    modRuntime "maven.modrinth:entityculling:1.11.3"
-    modRuntime "maven.modrinth:colorwheel:1.3.1+mc1.21.1"
-    modRuntime "maven.modrinth:createefficientgauge:0.2.0"
-    modRuntime "maven.modrinth:flerovium:1.2.0"
-
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.4.1'
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.4.1'
-}
-
-tasks.register('setupRunMods', Copy) {
-    from configurations.modRuntime
-    into 'run/mods'
-}
-
-tasks.named('prepareClientRun') {
-    dependsOn 'setupRunMods'
 }
 
 processResources {
